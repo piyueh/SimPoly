@@ -6,7 +6,6 @@
  * \date 2018-01-29
  */
 
-# pragma once
 
 # include <complex>
 # include <vector>
@@ -27,10 +26,21 @@ namespace op
 std::valarray<double> add(const std::valarray<double> &p1, 
         const std::valarray<double> &p2)
 {
+    std::valarray<double> result;
     if (p1.size() >= p2.size())
-        return p1 + p2;
+    {
+        result.resize(p1.size());
+        std::copy(std::begin(p2), std::end(p2), std::begin(result));
+        result += p1;
+    }
     else
-        return p2 + p1;
+    {
+        result.resize(p2.size());
+        std::copy(std::begin(p1), std::end(p1), std::begin(result));
+        result += p2;
+    }
+    
+    return result;
 }
     
 
@@ -53,7 +63,7 @@ std::valarray<double> multiply(const std::valarray<double> &p1,
         const auto &c = p1[i];
         std::transform(std::begin(p2), std::end(p2), 
                 std::begin(result)+i, std::begin(result)+i,
-                [&c](double &x, double &y)->double{return c*x+y;});
+                [&c](const double &x, const double &y)->double{return c*x+y;});
     }
     
     return result;
