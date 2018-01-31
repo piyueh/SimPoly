@@ -12,7 +12,7 @@
 # include <exception>
 
 
-namespace polynomial
+namespace simpoly
 {
 namespace exceptions
 {
@@ -121,4 +121,4 @@ public:
 };
 
 } // end of namespace exceptions
-} // end of namespace polynomial
+} // end of namespace simpoly

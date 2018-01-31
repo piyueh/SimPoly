@@ -17,7 +17,7 @@
 # include "exceptions.h"
 
 
-namespace polynomial
+namespace simpoly
 {
 namespace op
 {
@@ -345,5 +345,5 @@ std::valarray<double> find_roots(const std::valarray<double> &coeffs,
     return roots;
 }
 
-} 
-}
+} // end of namespace op
+} // end of namespace simpoly

@@ -12,7 +12,7 @@
 # include <valarray>
 
 
-namespace polynomial
+namespace simpoly
 {
 namespace op
 {
@@ -68,4 +68,4 @@ std::valarray<double> find_coefficients(
     
     
 } // end of namespace op
-} // end of namespace polynomial
+} // end of namespace simpoly

@@ -33,7 +33,7 @@ TEST(PolynomialAdd, EqualLength)
         p2[i] = dist2(generator);
     }
     
-    result = polynomial::op::add(p1, p2);
+    result = simpoly::op::add(p1, p2);
     
     for(unsigned i=0; i<degree; ++i)
         ASSERT_NEAR(p1[i]+p2[i], result[i], 1e-12);
@@ -56,7 +56,7 @@ TEST(PolynomialAdd, FirstOneLonger)
     for(unsigned i=0; i<degree; ++i) p1[i] = rdouble(generator);
     for(unsigned i=0; i<p2.size(); ++i) p2[i] = rdouble(generator);
     
-    result = polynomial::op::add(p1, p2); 
+    result = simpoly::op::add(p1, p2); 
     for(unsigned i=0; i<p2.size(); ++i) ASSERT_NEAR(p1[i]+p2[i], result[i], 1e-12);
     for(unsigned i=p2.size(); i<degree; ++i) ASSERT_NEAR(p1[i], result[i], 1e-12);
 }
@@ -78,7 +78,7 @@ TEST(PolynomialAdd, SecondOneLonger)
     for(unsigned i=0; i<degree; ++i) p1[i] = rdouble(generator);
     for(unsigned i=0; i<p2.size(); ++i) p2[i] = rdouble(generator);
     
-    result = polynomial::op::add(p2, p1); 
+    result = simpoly::op::add(p2, p1); 
     for(unsigned i=0; i<p2.size(); ++i) ASSERT_NEAR(p1[i]+p2[i], result[i], 1e-12);
     for(unsigned i=p2.size(); i<degree; ++i) ASSERT_NEAR(p1[i], result[i], 1e-12);
 }
@@ -89,11 +89,11 @@ TEST(PolynomialMult, ZeroLengthTests)
 {
     std::valarray<double> p1(0), p2(1);
     
-    try { polynomial::op::multiply(p1, p2); }
-    catch (polynomial::exceptions::ZeroCoeffsLength e) {};
+    try { simpoly::op::multiply(p1, p2); }
+    catch (simpoly::exceptions::ZeroCoeffsLength e) {};
     
-    try { polynomial::op::multiply(p2, p1); }
-    catch (polynomial::exceptions::ZeroCoeffsLength e) {};
+    try { simpoly::op::multiply(p2, p1); }
+    catch (simpoly::exceptions::ZeroCoeffsLength e) {};
 }
 # endif
 
