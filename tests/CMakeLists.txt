@@ -12,4 +12,4 @@ TARGET_LINK_LIBRARIES(operations ${GTEST_BOTH_LIBRARIES} simpoly)
 
 # use GoogleTest
 INCLUDE(GoogleTest)
-GTEST_DISCOVER_TESTS(operations)
+GTEST_DISCOVER_TESTS(operations EXTRA_ARGS --gtest_repeat=10)
