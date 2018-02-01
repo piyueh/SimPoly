@@ -53,7 +53,7 @@ std::valarray<double> multiply(const std::valarray<double> &p1,
 # endif
     
     // claculate the lenth of final polynomial
-    const int &len = (p1.size() - 1) * (p2.size() - 1) + 1;
+    const int &len = p1.size() + p2.size() - 1;
     
     // create an array holding result
     std::valarray<double> result(0.0, len);
