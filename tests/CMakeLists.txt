@@ -5,8 +5,15 @@
 # find GTest package
 FIND_PACKAGE(GTest REQUIRED)
 
+# alias
+SET(TEST_SRC ${PROJECT_SOURCE_DIR}/tests)
+
 # add test targets
-ADD_EXECUTABLE(operations ${PROJECT_SOURCE_DIR}/tests/test_operations.cpp)
+ADD_EXECUTABLE(operations 
+    ${TEST_SRC}/operations/main.cpp
+    ${TEST_SRC}/operations/add.cpp
+    ${TEST_SRC}/operations/multiply.cpp)
+
 TARGET_INCLUDE_DIRECTORIES(operations PRIVATE ${GTEST_INCLUDE_DIRS})
 TARGET_LINK_LIBRARIES(operations ${GTEST_BOTH_LIBRARIES} simpoly)
 
