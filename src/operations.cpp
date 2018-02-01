@@ -70,38 +70,49 @@ std::valarray<double> multiply(const std::valarray<double> &p1,
 }
     
 
-std::vector<std::valarray<double>> divide(const std::valarray<double> &p1, 
-        const std::valarray<double> &p2)
+std::valarray<double> divide(const std::valarray<double> &p1, 
+        const std::valarray<double> &p2, std::valarray<double> &r)
 {
 # ifndef NDEBUG
     if (p1.size() == 0) throw exceptions::ZeroCoeffsLength(__FILE__, __LINE__);
     if (p2.size() == 0) throw exceptions::ZeroCoeffsLength(__FILE__, __LINE__);
-    if (p1.size() < p2.size()) 
-        throw exceptions::UnmatchedLength(__FILE__, __LINE__, p1.size(), p2.size());
 # endif
+    
+    // reset remainder's initial value to polynomial 1
+    r = p1;
+    
+    // if polynomial 2 has a higher degree, then quotient is zero
+    if (p1.size() < p2.size()) return std::valarray<double>({0.0});
     
     // claculate the lenth of final polynomial
     const int &len = p1.size() - p2.size() + 1;
     
-    // create vectors holding quotient and remainder
+    // create vectors holding quotient
     std::valarray<double> Q(len);
-    std::valarray<double> R(p1);
     
     // alias
     const double &c = *(std::end(p2)-1);
     
     int i = Q.size();
-    int j = 0;
-    while ((p1.size()-j) >= p2.size())
+    for(int qi=len-1, ri=p1.size()-1; qi>=0; --qi, --ri)
     {
-        Q[i-1] = (*(std::end(R)-j-1)) / c;
-        R -= (p2 * Q[i-1]);
-        i -= 1; j += 1;
+        Q[qi] = r[ri] / c;
+        std::transform(
+                std::begin(p2), std::end(p2), std::begin(r)+qi, std::begin(r)+qi,
+                [&Q, &qi](double pp, double rr)->double{return rr-pp*Q[qi];});
     }
     
-    R = std::valarray<double>(R[std::slice(0, p1.size()-j, 1)]);
+    r = std::valarray<double>(r[std::slice(0, p2.size()-1, 1)]);
     
-    return {Q, R};
+    return Q;
+}
+
+
+std::valarray<double> divide(
+        const std::valarray<double> &p1, const std::valarray<double> &p2)
+{
+    std::valarray<double> R;
+    return divide(p1, p2, R);
 }
 
     

@@ -24,6 +24,9 @@ std::valarray<double> add(
 std::valarray<double> multiply(
         const std::valarray<double> &p1, const std::valarray<double> &p2);
 
+std::valarray<double> divide(const std::valarray<double> &p1, 
+        const std::valarray<double> &p2, std::valarray<double> &r);
+
 std::valarray<double> divide(
         const std::valarray<double> &p1, const std::valarray<double> &p2);
 

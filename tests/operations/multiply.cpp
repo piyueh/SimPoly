@@ -1,5 +1,5 @@
 /**
- * \file multiplu.cpp
+ * \file multiply.cpp
  * \brief Unit tests for polynomial multiplication.
  * \author Pi-Yueh Chuang
  * \version beta
