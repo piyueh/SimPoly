@@ -61,32 +61,33 @@ std::valarray<double> integral(const std::valarray<double> &coeffs);
 
 std::valarray<std::complex<double>> find_roots_complex(
     const std::valarray<std::complex<double>> &coeffs, 
-    const std::valarray<std::complex<double>> &guess, const double tol=1e-13);
+    const std::valarray<std::complex<double>> &guess, const double tol=1e-12);
 
 std::valarray<std::complex<double>> find_roots_complex(
     const std::valarray<std::complex<double>> &coeffs, 
-    const std::valarray<double> &guess, const double tol=1e-13);
+    const std::valarray<double> &guess, const double tol=1e-12);
 
 std::valarray<std::complex<double>> find_roots_complex(
     const std::valarray<double> &coeffs, 
-    const std::valarray<std::complex<double>> &guess, const double tol=1e-13);
+    const std::valarray<std::complex<double>> &guess, const double tol=1e-12);
 
 std::valarray<std::complex<double>> find_roots_complex(
     const std::valarray<double> &coeffs, 
-    const std::valarray<double> &guess, const double tol=1e-13);
+    const std::valarray<double> &guess, const double tol=1e-12);
 
 std::valarray<std::complex<double>> find_roots_complex(
-    const std::valarray<std::complex<double>> &coeffs, const double tol=1e-13);
+    const std::valarray<std::complex<double>> &coeffs, const double tol=1e-12);
 
 std::valarray<std::complex<double>> find_roots_complex(
-    const std::valarray<double> &coeffs, const double tol=1e-13);
+    const std::valarray<double> &coeffs, const double tol=1e-12);
+
+std::valarray<double> find_roots(
+    const std::valarray<double> &coeffs, const std::valarray<double> &guess, 
+    const double tol = 1e-12, const bool no_ignore_cmplx=false);
 
 std::valarray<double> find_roots(
     const std::valarray<double> &coeffs, 
-    const std::valarray<double> &guess, const double tol = 1e-13);
-
-std::valarray<double> find_roots(
-    const std::valarray<double> &coeffs, const double tol = 1e-13);
+    const double tol = 1e-12, const bool no_ignore_cmplx=false);
 
 std::valarray<double> find_coefficients(
     const double l, const std::valarray<double> &roots);

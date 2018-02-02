@@ -299,9 +299,9 @@ std::valarray<std::complex<double>> find_roots_complex(
             
             roots[i] -= delta;
             
-            if ((std::abs(delta) < tol) || 
-                    (std::abs(evaluate(coeffs, roots[i])) < tol))
-                stop[i] = true;
+            if (std::abs(roots[i].real()) < tol) roots[i].real(0.0);
+            if (std::abs(roots[i].imag()) < tol) roots[i].imag(0.0);
+            if (std::abs(delta) < tol) stop[i] = true;
         }
         
         // check the number of iterations
@@ -407,8 +407,9 @@ std::valarray<std::complex<double>> find_roots_complex(
 }
 
 
-std::valarray<double> find_roots(const std::valarray<double> &coeffs, 
-        const std::valarray<double> &guess, const double tol)
+std::valarray<double> find_roots(
+        const std::valarray<double> &coeffs, const std::valarray<double> &guess, 
+        const double tol, const bool no_ignore_cmplx)
 {
     // if degree is 0, no root exists; return a zero-length array
     if (coeffs.size() == 1) return std::valarray<double>(0);
@@ -422,7 +423,7 @@ std::valarray<double> find_roots(const std::valarray<double> &coeffs,
     // eliminate imagine part
     for(unsigned int i=0; i<z.size(); ++i)
     {
-        if (std::abs(z[i].imag()) >= tol)
+        if ((no_ignore_cmplx) && (std::abs(z[i].imag()) >= tol))
             throw exceptions::ComplexRoot(
                     __FILE__, __LINE__, z[i].real(), z[i].imag());
         
@@ -434,7 +435,8 @@ std::valarray<double> find_roots(const std::valarray<double> &coeffs,
 
 
 std::valarray<double> find_roots(
-        const std::valarray<double> &coeffs, const double tol)
+        const std::valarray<double> &coeffs, 
+        const double tol, const bool no_ignore_cmplx)
 {
 # ifndef NDEBUG
     using namespace exceptions;
@@ -459,7 +461,7 @@ std::valarray<double> find_roots(
     // eliminate imagine part
     for(unsigned int i=0; i<z.size(); ++i)
     {
-        if (std::abs(z[i].imag()) >= tol)
+        if ((no_ignore_cmplx) && (std::abs(z[i].imag()) >= tol))
             throw exceptions::ComplexRoot(
                     __FILE__, __LINE__, z[i].real(), z[i].imag());
         
