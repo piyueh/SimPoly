@@ -7,6 +7,7 @@
  */
 
 
+# include <iostream>
 # include <complex>
 # include <vector>
 # include <valarray>
@@ -179,6 +180,29 @@ double evaluate_root(const double l,
 }
 
 
+std::complex<double> evaluate_root(
+        const double l, const std::complex<double>* const &bg, 
+        const int degree, const std::complex<double> x)
+{
+# ifndef NDEBUG
+    if (degree < 0) throw exceptions::NegativeDegree(__FILE__, __LINE__, degree);
+# endif
+    
+    if (degree == 0)
+        return l;
+    else
+        return (x - *bg) * evaluate_root(l, bg+1, degree-1, x);
+}
+
+
+std::complex<double> evaluate_root(const double l, 
+        const std::valarray<std::complex<double>> &roots, 
+        const std::complex<double> x)
+{
+    return evaluate_root(l, &roots[0], roots.size(), x);
+}
+
+
 std::valarray<double> derivative(const std::valarray<double> &coeffs)
 {
     // alias to the length of provided coefficient array
@@ -230,7 +254,7 @@ std::valarray<double> integral(const std::valarray<double> &coeffs)
 
 std::valarray<std::complex<double>> find_roots_complex(
         const std::valarray<std::complex<double>> &coeffs, 
-        const double tol, const std::valarray<std::complex<double>> &guess)
+        const std::valarray<std::complex<double>> &guess, const double tol)
 {
     // alias to the length of provided coefficient array
     const auto &len = coeffs.size();
@@ -241,6 +265,7 @@ std::valarray<std::complex<double>> find_roots_complex(
 # ifndef NDEBUG
     using namespace exceptions;
     if (len == 0) throw ZeroCoeffsLength(__FILE__, __LINE__);
+    if (n != guess.size()) throw UnmatchedLength(__FILE__, __LINE__, n, guess.size());
 # endif
     
     // if degree is 0, no root exists; return a zero-length array
@@ -248,21 +273,6 @@ std::valarray<std::complex<double>> find_roots_complex(
     
     // initialize initial guess through copying
     std::valarray<std::complex<double>> roots(guess);
-    
-    // if initial guess of roots is zero-length, create an initial guess
-    if (roots.size() == 0)
-    {
-        roots.resize(n);
-        std::iota(std::begin(roots), std::end(roots), 0.0);
-        roots = std::pow(std::complex<double>(0.5, 0.5), roots);
-    }
-# ifndef NDEBUG
-    else
-    {
-        if (n != roots.size()) 
-            throw UnmatchedLength(__FILE__, __LINE__, n, guess.size());
-    }
-# endif
     
     // create a vector indicating if each root has been found
     std::vector<bool> stop(n, false);
@@ -274,16 +284,20 @@ std::valarray<std::complex<double>> find_roots_complex(
     {
         for(unsigned int i=0; i<n; ++i)
         {
-            std::complex<double> zi = roots[i];
+            const std::complex<double> &zi = roots[i];
             std::complex<double> delta = evaluate(coeffs, zi) / coeffs[len-1];
-            roots *= -1.0; roots += zi; roots[i] = 1.0;
             
             delta /= std::accumulate(
-                std::begin(roots), std::end(roots), std::complex<double>(1.0, 0.0),
-                [] (const std::complex<double> &x, const std::complex<double> &y)
-                    -> std::complex<double> { return x * y; });
+                std::begin(roots), std::begin(roots)+i, std::complex<double>(1.0, 0.0),
+                [&zi] (const std::complex<double> &x, const std::complex<double> &y)
+                    -> std::complex<double> { return x * (zi-y); });
             
-            roots[i] = zi - delta;
+            delta /= std::accumulate(
+                std::begin(roots)+i+1, std::end(roots), std::complex<double>(1.0, 0.0),
+                [&zi] (const std::complex<double> &x, const std::complex<double> &y)
+                    -> std::complex<double> { return x * (zi-y); });
+            
+            roots[i] -= delta;
             
             if ((std::abs(delta) < tol) || 
                     (std::abs(evaluate(coeffs, roots[i])) < tol))
@@ -292,7 +306,7 @@ std::valarray<std::complex<double>> find_roots_complex(
         
         // check the number of iterations
         iter += 1;
-        if (iter > 100000)
+        if (iter > 10000)
             throw exceptions::InfLoop(__FILE__, __LINE__);
     }
     
@@ -301,10 +315,26 @@ std::valarray<std::complex<double>> find_roots_complex(
 
 
 std::valarray<std::complex<double>> find_roots_complex(
-        const std::valarray<double> &coeffs, 
-        const double tol, const std::valarray<std::complex<double>> &guess)
+        const std::valarray<std::complex<double>> &coeffs, 
+        const std::valarray<double> &guess, const double tol)
 {
+    // if degree is 0, no root exists; return a zero-length array
+    if (coeffs.size() == 1) return std::valarray<std::complex<double>>(0);
     
+    // make a copy of guess with complex type, and perturbation in imag
+    std::valarray<std::complex<double>> G(guess.size());
+    std::copy(std::begin(guess), std::end(guess), std::begin(G));
+    std::for_each(std::begin(G), std::end(G),
+            [](std::complex<double> &i){i.imag(1e-8);});
+    
+    return find_roots_complex(coeffs, G, tol);
+}
+
+
+std::valarray<std::complex<double>> find_roots_complex(
+        const std::valarray<double> &coeffs, 
+        const std::valarray<std::complex<double>> &guess, const double tol)
+{
     // if degree is 0, no root exists; return a zero-length array
     if (coeffs.size() == 1) return std::valarray<std::complex<double>>(0);
     
@@ -312,33 +342,116 @@ std::valarray<std::complex<double>> find_roots_complex(
     std::valarray<std::complex<double>> C(coeffs.size());
     std::copy(std::begin(coeffs), std::end(coeffs), std::begin(C));
     
-    return find_roots_complex(C, tol, guess);
+    return find_roots_complex(C, guess, tol);
 }
 
 
 std::valarray<std::complex<double>> find_roots_complex(
         const std::valarray<double> &coeffs, 
-        const double tol, const std::valarray<double> &guess)
+        const std::valarray<double> &guess, const double tol)
 {
     // if degree is 0, no root exists; return a zero-length array
     if (coeffs.size() == 1) return std::valarray<std::complex<double>>(0);
     
     // make a copy of guess with complex type
-    std::valarray<std::complex<double>> g(guess.size());
-    std::copy(std::begin(guess), std::end(guess), std::begin(g));
+    std::valarray<std::complex<double>> G(guess.size());
+    std::copy(std::begin(guess), std::end(guess), std::begin(G));
+    std::for_each(std::begin(G), std::end(G),
+            [](std::complex<double> &i){i.imag(1e-8);});
+    //std::transform(std::begin(guess), std::end(guess), std::begin(guess),
+    //        [](std::complex<double> &i){i.imag(1e-8);});
     
-    return find_roots_complex(coeffs, tol, guess);
+    return find_roots_complex(coeffs, G, tol);
+}
+
+
+std::valarray<std::complex<double>> find_roots_complex(
+        const std::valarray<std::complex<double>> &coeffs, const double tol)
+{
+# ifndef NDEBUG
+    using namespace exceptions;
+    if (coeffs.size() == 0) throw ZeroCoeffsLength(__FILE__, __LINE__);
+# endif
+    
+    // if degree is 0, no root exists; return a zero-length array
+    if (coeffs.size() == 1) return std::valarray<std::complex<double>>(0);
+    
+    // initialize initial guess through copying
+    std::valarray<std::complex<double>> guess(coeffs.size()-1);
+    
+    std::iota(std::begin(guess), std::end(guess), 0.0);
+    guess = std::pow(std::complex<double>(0.5, 0.5), guess);
+    
+    return find_roots_complex(coeffs, guess, tol);
+}
+
+
+std::valarray<std::complex<double>> find_roots_complex(
+        const std::valarray<double> &coeffs, const double tol)
+{
+# ifndef NDEBUG
+    using namespace exceptions;
+    if (coeffs.size() == 0) throw ZeroCoeffsLength(__FILE__, __LINE__);
+# endif
+    
+    // if degree is 0, no root exists; return a zero-length array
+    if (coeffs.size() == 1) return std::valarray<std::complex<double>>(0);
+    
+    // initialize initial guess through copying
+    std::valarray<std::complex<double>> guess(coeffs.size()-1);
+    
+    std::iota(std::begin(guess), std::end(guess), 0.0);
+    guess = std::pow(std::complex<double>(0.5, 0.5), guess);
+    
+    return find_roots_complex(coeffs, guess, tol);
 }
 
 
 std::valarray<double> find_roots(const std::valarray<double> &coeffs, 
-        const double tol, const std::valarray<double> &guess)
+        const std::valarray<double> &guess, const double tol)
 {
     // if degree is 0, no root exists; return a zero-length array
     if (coeffs.size() == 1) return std::valarray<double>(0);
     
     // get roots using algorithms that is specifically for complex roots
-    std::valarray<std::complex<double>> z = find_roots_complex(coeffs, tol, guess);;
+    std::valarray<std::complex<double>> z = find_roots_complex(coeffs, guess, tol);;
+    
+    // create an array to hold real roots
+    std::valarray<double> roots(z.size());
+    
+    // eliminate imagine part
+    for(unsigned int i=0; i<z.size(); ++i)
+    {
+        if (std::abs(z[i].imag()) >= tol)
+            throw exceptions::ComplexRoot(
+                    __FILE__, __LINE__, z[i].real(), z[i].imag());
+        
+        roots[i] = z[i].real();
+    }
+    
+    return roots;
+}
+
+
+std::valarray<double> find_roots(
+        const std::valarray<double> &coeffs, const double tol)
+{
+# ifndef NDEBUG
+    using namespace exceptions;
+    if (coeffs.size() == 0) throw ZeroCoeffsLength(__FILE__, __LINE__);
+# endif
+    
+    // if degree is 0, no root exists; return a zero-length array
+    if (coeffs.size() == 1) return std::valarray<double>(0);
+    
+    // initialize initial guess through copying
+    std::valarray<std::complex<double>> guess(coeffs.size()-1);
+    
+    std::iota(std::begin(guess), std::end(guess), 0.0);
+    guess = std::pow(std::complex<double>(0.5, 0.5), guess);
+    
+    // get roots using algorithms that is specifically for complex roots
+    std::valarray<std::complex<double>> z = find_roots_complex(coeffs, guess, tol);;
     
     // create an array to hold real roots
     std::valarray<double> roots(z.size());
