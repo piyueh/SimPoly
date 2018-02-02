@@ -88,9 +88,9 @@ public:
             const int &l1, const int &l2):
         len1(l1), len2(l2),
         PolynomialErrorGeneral(file, line,
-                "An array/arrays do not have expected lengths"
-                "Length 1: " + std::to_string(l1) +
-                "Length 2: " + std::to_string(l2) + ".") {};
+                "An array/arrays do not have expected lengths."
+                " Length1: " + std::to_string(l1) +
+                " Length2: " + std::to_string(l2) + ".") {};
     
     const int len1, len2;
 };
