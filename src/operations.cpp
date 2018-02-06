@@ -372,6 +372,9 @@ std::valarray<std::complex<double>> find_roots_complex(
     // create a vector indicating if each root has been found
     std::vector<bool> stop(n, false);
     
+    // derivative
+    auto d = derivative(coeffs);
+    
     // an index to record the number of where iteration
     long iter = 0;
     
@@ -380,29 +383,34 @@ std::valarray<std::complex<double>> find_roots_complex(
         for(unsigned int i=0; i<n; ++i)
         {
             const std::complex<double> &zi = roots[i];
-            std::complex<double> delta = evaluate(coeffs, zi) / coeffs[len-1];
+            std::complex<double> temp, delta;
             
-            delta /= std::accumulate(
-                std::begin(roots), std::begin(roots)+i, std::complex<double>(1.0, 0.0),
-                [&zi] (const std::complex<double> &x, const std::complex<double> &y)
-                    -> std::complex<double> { return x * (zi-y); });
+            temp = evaluate(coeffs, zi) / evaluate(d, zi);
             
-            delta /= std::accumulate(
-                std::begin(roots)+i+1, std::end(roots), std::complex<double>(1.0, 0.0),
+            delta = std::accumulate(
+                std::begin(roots), std::begin(roots)+i, std::complex<double>(0.0, 0.0),
                 [&zi] (const std::complex<double> &x, const std::complex<double> &y)
-                    -> std::complex<double> { return x * (zi-y); });
+                -> std::complex<double> { return x + 1.0 / (zi - y); });
+            
+            delta += std::accumulate(
+                std::begin(roots)+i+1, std::end(roots), std::complex<double>(0.0, 0.0),
+                [&zi] (const std::complex<double> &x, const std::complex<double> &y)
+                -> std::complex<double> { return x + 1.0 / (zi - y); });
+            
+            delta *= temp;
+            delta = 1.0 - delta;
+            delta = temp / delta;
+            
+            if ((roots[i].real() == 0.0) && 
+                    (roots[i].imag() == 0.0)) stop[i] = true;
+            if ((std::abs(delta)/std::abs(roots[i])) < tol) stop[i] = true;
             
             roots[i] -= delta;
-            
-            if (std::abs(roots[i].real()) < tol) roots[i].real(0.0);
-            if (std::abs(roots[i].imag()) < tol) roots[i].imag(0.0);
-            if (std::abs(delta) < tol) stop[i] = true;
         }
         
         // check the number of iterations
         iter += 1;
-        if (iter > 10000)
-            throw exceptions::InfLoop(__FILE__, __LINE__);
+        if (iter > 10000) throw exceptions::InfLoop(__FILE__, __LINE__);
     }
     
     return roots;
