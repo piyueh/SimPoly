@@ -7,7 +7,11 @@ SET(SRC ${PROJECT_SOURCE_DIR}/src)
 
 # source files
 SET(SOURCE
-    ${SRC}/operations.cpp)
+    ${SRC}/basic/operations.cpp
+    ${SRC}/basic/evaluations.cpp
+    ${SRC}/basic/calculus.cpp
+    ${SRC}/basic/root_findings.cpp
+    )
 
 # SimPoly library
 ADD_LIBRARY(simpoly ${SOURCE})
