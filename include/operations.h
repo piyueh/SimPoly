@@ -57,6 +57,9 @@ std::complex<double> evaluate_root(const double l,
 
 std::valarray<double> derivative(const std::valarray<double> &coeffs);
 
+std::valarray<std::complex<double>> derivative(
+        const std::valarray<std::complex<double>> &coeffs);
+
 std::valarray<double> integral(const std::valarray<double> &coeffs);
 
 std::valarray<std::complex<double>> find_roots_complex(
@@ -89,9 +92,15 @@ std::valarray<double> find_roots(
     const std::valarray<double> &coeffs, 
     const double tol = 1e-12, const bool no_ignore_cmplx=false);
 
+double find_root_NRM(const std::valarray<double> &coeffs,
+        const double guess, const double tol);
+
+std::complex<double> find_root_NRM(
+        const std::valarray<std::complex<double>> &coeffs,
+        const std::complex<double> guess, const double tol);
+
 std::valarray<double> find_coefficients(
     const double l, const std::valarray<double> &roots);
-    
     
 } // end of namespace op
 } // end of namespace simpoly

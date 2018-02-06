@@ -229,6 +229,33 @@ std::valarray<double> derivative(const std::valarray<double> &coeffs)
 }
 
 
+std::valarray<std::complex<double>> derivative(
+        const std::valarray<std::complex<double>> &coeffs)
+{
+    // alias to the length of provided coefficient array
+    const auto &len = coeffs.size();
+    
+# ifndef NDEBUG
+    if (len == 0) throw exceptions::ZeroCoeffsLength(__FILE__, __LINE__);
+# endif
+    
+    if (len == 1)
+        return std::valarray<std::complex<double>>(0.0, 1);
+    
+    // initialize result using values in coeffs[1:]
+    std::valarray<std::complex<double>> result(coeffs[std::slice(1, len-1, 1)]);
+    
+    // alias to the beginning of result minus 1
+    const auto &bg = std::begin(result) - 1;
+    
+    // calculate correct values in-place
+    std::for_each(std::begin(result), std::end(result),
+            [&bg](std::complex<double> &x){x *= (&x - bg);});
+    
+    return result;
+}
+
+
 std::valarray<double> integral(const std::valarray<double> &coeffs)
 {
     // alias to the length of provided coefficient array
@@ -249,6 +276,74 @@ std::valarray<double> integral(const std::valarray<double> &coeffs)
             [&bg](const double &x)->double{return x / (&x - bg);});
     
     return result;
+}
+
+
+double find_root_NRM(const std::valarray<double> &coeffs,
+        const double guess, const double tol)
+{
+    double ans, diff;
+    std::valarray<double> d = derivative(coeffs);
+    
+    ans = guess;
+    
+    for(unsigned iter=0; iter<10000; ++iter)
+    {
+        double value = evaluate(coeffs, ans),
+               d_value = evaluate(d, ans);
+        
+        if (d_value == 0.0)
+        {
+            if (value == 0.0) break; // found multiple root
+            else
+            {
+                ans *= 1.01;
+                value = evaluate(coeffs, ans);
+                d_value = evaluate(d, ans);
+            }
+        }
+        diff = value / d_value;
+        ans -= diff;
+        if (std::abs(diff/((ans==0.0)?1.0:ans)) < tol) break;
+        if (iter > 10000) throw exceptions::InfLoop(__FILE__, __LINE__);
+    }
+    
+    return ans;
+}
+
+
+std::complex<double> find_root_NRM(
+        const std::valarray<std::complex<double>> &coeffs,
+        const std::complex<double> guess, const double tol)
+{
+    std::complex<double> ans, diff;
+    std::valarray<std::complex<double>> d = derivative(coeffs);
+    
+    ans = guess;
+    
+    for(unsigned iter=0; iter<10000; ++iter)
+    {
+        std::complex<double> 
+            value = evaluate(coeffs, ans),
+            d_value = evaluate(d, ans);
+        
+        if (d_value == 0.0)
+        {
+            if (value == 0.0) break; // found multiple root
+            else
+            {
+                ans *= 1.01;
+                value = evaluate(coeffs, ans);
+                d_value = evaluate(d, ans);
+            }
+        }
+        diff = value / d_value;
+        ans -= diff;
+        if ((std::abs(diff)/std::abs((ans==0.0)?1.0:ans)) < tol) break;
+        if (iter > 10000) throw exceptions::InfLoop(__FILE__, __LINE__);
+    }
+    
+    return ans;
 }
 
 
@@ -358,8 +453,6 @@ std::valarray<std::complex<double>> find_roots_complex(
     std::copy(std::begin(guess), std::end(guess), std::begin(G));
     std::for_each(std::begin(G), std::end(G),
             [](std::complex<double> &i){i.imag(1e-8);});
-    //std::transform(std::begin(guess), std::end(guess), std::begin(guess),
-    //        [](std::complex<double> &i){i.imag(1e-8);});
     
     return find_roots_complex(coeffs, G, tol);
 }
