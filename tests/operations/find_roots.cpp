@@ -344,3 +344,60 @@ TEST(PolynomialRoots, ComplexRoots6)
         ASSERT_NEAR(expect[i].imag(), result[i].imag(), 1e-10);
     }
 }
+
+TEST(PolynomialRoots, RealRoots1)
+{
+    DoubleVec c({
+            0.0005010250303020029,  0.006234914567457598,
+            -0.008217029116396798, -0.1730879244322208,  0.2766216841964072,
+            1.248746139278724, -3.203690116155496, -0.1925619244634082,
+            6.985683557019738, -7.280199120562615,  2.34});
+    
+    DoubleVec expect({
+            0.7602860830452414, -0.1591090490225655,  0.9977072170854013,
+            0.357143338844115,  0.7414751420913581, -0.0927725821643739,
+            -0.5554400402569037,  0.8916535577665332,  0.4763459267936514,
+            -0.3060933888138182});
+    
+    DoubleVec guess(expect.size());
+    for(auto &it: guess) it = drand(generator);
+
+    DoubleVec result = simpoly::op::find_roots(c, guess, 1e-12);
+    
+    // sort `expect` and `result` so we can compare them term by term
+    std::sort(std::begin(expect), std::end(expect));
+    std::sort(std::begin(result), std::end(result));
+    
+    for(unsigned i=0; i<expect.size(); ++i)
+        ASSERT_NEAR(0.0, std::abs((result[i]-expect[i])/expect[i]), 1e-10);
+}
+
+TEST(PolynomialRoots, RealRoots2)
+{
+    DoubleVec c({
+            -1.196351529195439e-07,  4.919973730289604e-06,
+            -1.986062723842243e-05, -0.0002469080505527796,
+            0.001284978870504016,  0.00348963837303726, -0.02404374066899382,
+            -0.01347466727223127,  0.200125699333026, -0.06577075073777044,
+            -0.810921913206468,  0.6347898119672782,  1.538343111992133,
+            -1.605177209592742, -1.062861119607442,  1.278 });
+    
+    DoubleVec expect({
+            -0.5036077278270599,  0.5253156753043096, -0.1863051985638844,
+            0.4066469386958105, -0.327348593000119,  0.472961157808012,
+            -0.5504948721890652,  0.1513160141154197,  0.2625784242407205,
+            0.5203189352440989,  0.4459543391846599, -0.3634891145277974,
+            -0.7818520862771727,  0.7310561595323164,  0.02860966626244443 });
+    
+    DoubleVec guess(expect.size());
+    for(auto &it: guess) it = drand(generator);
+
+    DoubleVec result = simpoly::op::find_roots(c, guess, 1e-12);
+    
+    // sort `expect` and `result` so we can compare them term by term
+    std::sort(std::begin(expect), std::end(expect));
+    std::sort(std::begin(result), std::end(result));
+    
+    for(unsigned i=0; i<expect.size(); ++i)
+        ASSERT_NEAR(result[i], expect[i], 1e-10);
+}
