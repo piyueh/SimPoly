@@ -7,16 +7,17 @@
  */
 
 
-# include <valarray>
 # include <random>
 
 # include <gtest/gtest.h>
 
-# include "operations.h"
+# include "basic.h"
 # include "exceptions.h"
 
 
 extern std::default_random_engine generator;
+
+using namespace simpoly;
 
 
 # ifndef NDEBUG
@@ -24,11 +25,11 @@ TEST(PolynomialDivide, ZeroLengthTests)
 {
     std::valarray<double> p1(0), p2(1);
     
-    try { simpoly::op::divide(p1, p2); }
-    catch (simpoly::exceptions::ZeroCoeffsLength e) {};
+    try { basic::divide(p1, p2); }
+    catch (exceptions::ZeroCoeffsLength e) {};
     
-    try { simpoly::op::divide(p2, p1); }
-    catch (simpoly::exceptions::ZeroCoeffsLength e) {};
+    try { basic::divide(p2, p1); }
+    catch (exceptions::ZeroCoeffsLength e) {};
 }
 # endif
 
@@ -37,13 +38,13 @@ TEST(PolynomialDivide, LongerSecondPoly)
     std::valarray<double> p1({1.0, 2.0, 3.0}), p2({1.0, 2.0, 3.0, 4.0});
     
     // test the version without remainder
-    std::valarray<double> q = simpoly::op::divide(p1, p2);
+    std::valarray<double> q = basic::divide(p1, p2);
     ASSERT_EQ(1, q.size());
     ASSERT_DOUBLE_EQ(0.0, q[0]);
     
     // test the version with remainder
     std::valarray<double> r;
-    q = simpoly::op::divide(p1, p2, r);
+    q = basic::divide(p1, p2, r);
     ASSERT_EQ(1, q.size());
     ASSERT_DOUBLE_EQ(0.0, q[0]);
     for(unsigned i=0; i<3; ++i) ASSERT_DOUBLE_EQ(p1[i], r[i]);
@@ -54,7 +55,7 @@ TEST(PolynomialDivide, FixPolynomial1)
     std::valarray<double> p1({-10.0, -9.0, 1.0}), p2({1.0, 1.0});
     std::valarray<double> q, r;
     
-    q = simpoly::op::divide(p1, p2, r);
+    q = basic::divide(p1, p2, r);
     
     ASSERT_EQ(2, q.size());
     ASSERT_DOUBLE_EQ(-10.0, q[0]);
@@ -69,7 +70,7 @@ TEST(PolynomialDivide, FixPolynomial2)
     std::valarray<double> p1({-3.0, 10.0, -5.0, 3.0}), p2({1.0, 3.0});
     std::valarray<double> q, r;
     
-    q = simpoly::op::divide(p1, p2, r);
+    q = basic::divide(p1, p2, r);
     
     ASSERT_EQ(3, q.size());
     ASSERT_DOUBLE_EQ(4.0, q[0]);
@@ -85,7 +86,7 @@ TEST(PolynomialDivide, FixPolynomial3)
     std::valarray<double> p1({1.0, 2.0, 0.0, 3.0, 4.0}), p2({2.0, 1.0, 1.0});
     std::valarray<double> q, r;
     
-    q = simpoly::op::divide(p1, p2, r);
+    q = basic::divide(p1, p2, r);
     
     ASSERT_EQ(3, q.size());
     ASSERT_DOUBLE_EQ(-7.0, q[0]);
@@ -115,9 +116,9 @@ TEST(PolynomialDivide, RandomPolynomial)
     
     std::valarray<double> q, r, expect;
     
-    q = simpoly::op::divide(p1, p2, r);
+    q = basic::divide(p1, p2, r);
     
-    expect = simpoly::op::add(simpoly::op::multiply(p2, q), r);
+    expect = basic::add(basic::multiply(p2, q), r);
     ASSERT_EQ(len1, expect.size());
     
     for(unsigned i=0; i<len1; ++i) ASSERT_NEAR(p1[i], expect[i], 1e-8);

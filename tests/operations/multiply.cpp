@@ -7,27 +7,27 @@
  */
 
 
-# include <valarray>
 # include <random>
 
 # include <gtest/gtest.h>
 
-# include "operations.h"
+# include "basic.h"
 # include "exceptions.h"
 
 
 extern std::default_random_engine generator;
 
+using namespace simpoly;
 
 # ifndef NDEBUG
 TEST(PolynomialMult, ZeroLengthTests)
 {
     std::valarray<double> p1(0), p2(1);
     
-    try { simpoly::op::multiply(p1, p2); }
+    try { basic::multiply(p1, p2); }
     catch (simpoly::exceptions::ZeroCoeffsLength e) {};
     
-    try { simpoly::op::multiply(p2, p1); }
+    try { basic::multiply(p2, p1); }
     catch (simpoly::exceptions::ZeroCoeffsLength e) {};
 }
 # endif
@@ -39,11 +39,11 @@ TEST(PolynomialMult, FixedPolynomials1)
     std::valarray<double> expect({0.0, 0.0, 21.0, -15.0, 12.0});
     std::valarray<double> actual;
     
-    actual = simpoly::op::multiply(p1, p2);
+    actual = basic::multiply(p1, p2);
     ASSERT_EQ(5, actual.size());
     for(unsigned i=0; i<5; ++i) ASSERT_NEAR(expect[i], actual[i], 1e-12);
     
-    actual = simpoly::op::multiply(p2, p1);
+    actual = basic::multiply(p2, p1);
     ASSERT_EQ(5, actual.size());
     for(unsigned i=0; i<5; ++i) ASSERT_NEAR(expect[i], actual[i], 1e-12);
 }
@@ -55,11 +55,11 @@ TEST(PolynomialMult, FixedPolynomials2)
     std::valarray<double> expect({30.0, -39.0, 2.0, 8.0});
     std::valarray<double> actual;
     
-    actual = simpoly::op::multiply(p1, p2);
+    actual = basic::multiply(p1, p2);
     ASSERT_EQ(4, actual.size());
     for(unsigned i=0; i<4; ++i) ASSERT_NEAR(expect[i], actual[i], 1e-12);
     
-    actual = simpoly::op::multiply(p2, p1);
+    actual = basic::multiply(p2, p1);
     ASSERT_EQ(4, actual.size());
     for(unsigned i=0; i<4; ++i) ASSERT_NEAR(expect[i], actual[i], 1e-12);
 }
@@ -71,11 +71,11 @@ TEST(PolynomialMult, FixedPolynomials3)
     std::valarray<double> expect({45.0, -95.0, 14.0, -19.0, 1.0});
     std::valarray<double> actual;
     
-    actual = simpoly::op::multiply(p1, p2);
+    actual = basic::multiply(p1, p2);
     ASSERT_EQ(5, actual.size());
     for(unsigned i=0; i<5; ++i) ASSERT_NEAR(expect[i], actual[i], 1e-12);
     
-    actual = simpoly::op::multiply(p2, p1);
+    actual = basic::multiply(p2, p1);
     ASSERT_EQ(5, actual.size());
     for(unsigned i=0; i<5; ++i) ASSERT_NEAR(expect[i], actual[i], 1e-12);
 }
@@ -96,7 +96,7 @@ TEST(PolynomialMult, RandomPolynomials)
     for(unsigned i=0; i<degree1+1; ++i) p1[i] = dist2(generator);
     for(unsigned i=0; i<degree2+1; ++i) p2[i] = dist2(generator);
     
-    actual = simpoly::op::multiply(p1, p2);
+    actual = basic::multiply(p1, p2);
     ASSERT_EQ(result_degree+1, actual.size());
     for(unsigned i=0; i<result_degree+1; ++i)
     {
@@ -110,7 +110,7 @@ TEST(PolynomialMult, RandomPolynomials)
         ASSERT_NEAR(value, actual[i], 1e-12);
     }
     
-    actual = simpoly::op::multiply(p2, p1);
+    actual = basic::multiply(p2, p1);
     ASSERT_EQ(result_degree+1, actual.size());
     for(unsigned i=0; i<result_degree+1; ++i)
     {

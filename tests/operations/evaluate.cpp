@@ -7,38 +7,45 @@
  */
 
 
-# include <valarray>
-# include <complex>
 # include <random>
 
 # include <gtest/gtest.h>
 
-# include "operations.h"
+# include "basic.h"
 # include "exceptions.h"
 
 
 extern std::default_random_engine generator;
 
+using namespace simpoly;
 
 # ifndef NDEBUG
 TEST(PolynomialEvaluation, WrongLengthTests)
 {
-    try { simpoly::op::evaluate(nullptr, 0, 0.0); }
+    double *c1;
+    try { basic::evaluate(c1, 0, 0.0); }
     catch (simpoly::exceptions::ZeroCoeffsLength e) {};
     
-    try { simpoly::op::evaluate(nullptr, -1, 0.0); }
+    try { basic::evaluate(c1, -1, 0.0); }
     catch (simpoly::exceptions::NegativeCoeffsLength e) {};
     
-    try { simpoly::op::evaluate(std::valarray<double>(0), 0.0); }
+    try { basic::evaluate(basic::DArry(0), 0.0); }
     catch (simpoly::exceptions::ZeroCoeffsLength e) {};
     
-    try { simpoly::op::evaluate(nullptr, 0, std::complex<double>(0.0)); }
+    try { basic::evaluate_from_root(1.0, c1, -1, 0.0); }
+    catch (simpoly::exceptions::NegativeDegree e) {};
+    
+    basic::Cmplx *c2;
+    try { basic::evaluate(c2, 0, basic::Cmplx(0.0)); }
     catch (simpoly::exceptions::ZeroCoeffsLength e) {};
     
-    try { simpoly::op::evaluate(std::valarray<std::complex<double>>(0), 0.0); }
+    try { basic::evaluate(c2, -1, basic::Cmplx(0.0)); }
+    catch (simpoly::exceptions::NegativeCoeffsLength e) {};
+    
+    try { basic::evaluate(basic::CArry(0), basic::Cmplx(0.0)); }
     catch (simpoly::exceptions::ZeroCoeffsLength e) {};
     
-    try { simpoly::op::evaluate_root(1.0, nullptr, -1, 0.0); }
+    try { basic::evaluate_from_root(basic::Cmplx(1.0), c2, -1, basic::Cmplx(0.0)); }
     catch (simpoly::exceptions::NegativeDegree e) {};
 }
 # endif
@@ -68,7 +75,7 @@ TEST(PolynomialEvaluation, RealPolyPointer1)
     
     for(unsigned i=0; i<11; ++i)
     {
-        double result = simpoly::op::evaluate(c, 16, x[i]);
+        double result = basic::evaluate(c, 16, x[i]);
         ASSERT_NEAR(expect[i], result, 1e-12);
     }
     
@@ -98,7 +105,7 @@ TEST(PolynomialEvaluation, RealPolyPointer2)
     
     for(unsigned i=0; i<11; ++i)
     {
-        double result = simpoly::op::evaluate(c, 10, x[i]);
+        double result = basic::evaluate(c, 10, x[i]);
         ASSERT_NEAR(expect[i], result, 1e-12);
     }
     
@@ -107,8 +114,8 @@ TEST(PolynomialEvaluation, RealPolyPointer2)
 
 TEST(PolynomialEvaluation, RealPolyValarray1)
 {
-    std::valarray<double> c, x, expect; 
-    c = std::valarray<double>({
+    basic::DArry c, x, expect; 
+    c = basic::DArry({
         0.5147664494717302, 0.6377586019590598, 0.8693376634434886,
         0.3616343298342888, 0.3671257345690335, 0.9879013608892221, 
         0.057927626742414, 0.4893598360407232, 0.4563590270223324, 
@@ -116,13 +123,13 @@ TEST(PolynomialEvaluation, RealPolyValarray1)
         0.4044647334180196, 0.8381610445132728, 0.2320406628170849, 
         0.6094284242837951});
     
-    x = std::valarray<double>({
+    x = basic::DArry({
         -0.4228109374105191, -0.8916690947701997, 0.3004964434901052,
         0.5289741804671604, 0.391125993645951, -0.9705540830999013, 
         0.140811530330192, -0.081151319191916, -0.6987384555851917, 
         -0.7946392224478713, 1.});
     
-    expect = std::valarray<double>({
+    expect = basic::DArry({
         0.3708304280699384, -0.5004742070702876, 0.8003385938623538,
         1.232717689712284, 0.9378580252923071, -1.5694372775647332, 
         0.6230171267614112, 0.4685557372060891, 0.2439320727821255, 
@@ -130,27 +137,27 @@ TEST(PolynomialEvaluation, RealPolyValarray1)
     
     for(unsigned i=0; i<11; ++i)
     {
-        double result = simpoly::op::evaluate(c, x[i]);
+        double result = basic::evaluate(c, x[i]);
         ASSERT_NEAR(expect[i], result, 1e-12);
     }
 }
 
 TEST(PolynomialEvaluation, RealPolyValarray2)
 {
-    std::valarray<double> c, x, expect; 
-    c = std::valarray<double>({
+    basic::DArry c, x, expect; 
+    c = basic::DArry({
         0.2592584530394499, -0.7514681609411962, 0.5091058938166564,
         -0.1583353677036581, -0.482985886510811, -0.0168285696265613,
         0.1508398332186933, -0.6081712532961356, -0.5204924007984593,
         -0.8852066676326502});
     
-    x = std::valarray<double>({
+    x = basic::DArry({
         -0.7534486553162925, -0.0347858160484482, -0.736302652337975,
         -0.2999595980829783, -0.7307329134372322, -0.7458658132191887,
         -0.8773789778035546, -0.4204977672318795, 0.9370281988772768,
         0.6570947501205981, 0.1976671115913535});
     
-    expect = std::valarray<double>({
+    expect = basic::DArry({
         1.157259553740849, 0.2860208900847923, 1.1201937097154451,
         0.5311058905544308, 1.1087026242468756, 1.1405386945874234,
         1.5421396366024629, 0.6642644256506487, -1.5985969097982302,
@@ -158,41 +165,41 @@ TEST(PolynomialEvaluation, RealPolyValarray2)
     
     for(unsigned i=0; i<11; ++i)
     {
-        double result = simpoly::op::evaluate(c, x[i]);
+        double result = basic::evaluate(c, x[i]);
         ASSERT_NEAR(expect[i], result, 1e-12);
     }
 }
 
 TEST(PolynomialEvaluation, ComplexPolyPointer)
 {
-    std::complex<double> *c, *x, *expect;
-    c = new std::complex<double>[8]{
-        std::complex<double>(0.759414027655581, 0.5692286126871828),
-        std::complex<double>(-0.3909314128950405, -0.5208053215270787),
-        std::complex<double>(-0.4159999364898488, -0.929797800647657),
-        std::complex<double>(-0.05289305288679613, 0.7623008176129775),
-        std::complex<double>(0.3810204528687382, 0.5443453788782495),
-        std::complex<double>(-0.182901423575166, 0.5832026946660676),
-        std::complex<double>(0.5132115703426237, -0.2746174894763567),
-        std::complex<double>(-0.05772567034291853, 0.2078453112062857)};
+    basic::Cmplx *c, *x, *expect;
+    c = new basic::Cmplx[8]{
+        basic::Cmplx(0.759414027655581, 0.5692286126871828),
+        basic::Cmplx(-0.3909314128950405, -0.5208053215270787),
+        basic::Cmplx(-0.4159999364898488, -0.929797800647657),
+        basic::Cmplx(-0.05289305288679613, 0.7623008176129775),
+        basic::Cmplx(0.3810204528687382, 0.5443453788782495),
+        basic::Cmplx(-0.182901423575166, 0.5832026946660676),
+        basic::Cmplx(0.5132115703426237, -0.2746174894763567),
+        basic::Cmplx(-0.05772567034291853, 0.2078453112062857)};
 
-    x = new std::complex<double>[5]{
-        std::complex<double>(0.5022381178753841, 0.6970911204735433),
-        std::complex<double>(-0.2660269666516346, 0.3408308392987081),
-        std::complex<double>(0.07225847489108794, -0.4890141431874784),
-        std::complex<double>(-0.6984620632833527, 0.3385783677682219),
-        std::complex<double>(0.6724492933394415, 0.6822524332030151)};
+    x = new basic::Cmplx[5]{
+        basic::Cmplx(0.5022381178753841, 0.6970911204735433),
+        basic::Cmplx(-0.2660269666516346, 0.3408308392987081),
+        basic::Cmplx(0.07225847489108794, -0.4890141431874784),
+        basic::Cmplx(-0.6984620632833527, 0.3385783677682219),
+        basic::Cmplx(0.6724492933394415, 0.6822524332030151)};
     
-    expect = new std::complex<double>[5]{
-        std::complex<double>(1.910143035375531, -0.9284375830984708),
-        std::complex<double>(0.8535065511576807, 0.7411792224928896),
-        std::complex<double>(0.4293431036176729, 0.9751281975153519),
-        std::complex<double>(0.1349251253981901, 0.4761603912848932),
-        std::complex<double>(1.294817005520558, -1.875701442672196)};
+    expect = new basic::Cmplx[5]{
+        basic::Cmplx(1.910143035375531, -0.9284375830984708),
+        basic::Cmplx(0.8535065511576807, 0.7411792224928896),
+        basic::Cmplx(0.4293431036176729, 0.9751281975153519),
+        basic::Cmplx(0.1349251253981901, 0.4761603912848932),
+        basic::Cmplx(1.294817005520558, -1.875701442672196)};
     
     for(unsigned i=0; i<5; ++i)
     {
-        std::complex<double> result = simpoly::op::evaluate(c, 8, x[i]);
+        basic::Cmplx result = basic::evaluate(c, 8, x[i]);
         ASSERT_NEAR(expect[i].real(), result.real(), 1e-12);
         ASSERT_NEAR(expect[i].imag(), result.imag(), 1e-12);
     }
@@ -202,32 +209,32 @@ TEST(PolynomialEvaluation, ComplexPolyPointer)
 
 TEST(PolynomialEvaluation, ComplexPolyValarray)
 {
-    std::valarray<std::complex<double>> 
+    basic::CArry 
         
-        c({std::complex<double>(0.759414027655581, 0.5692286126871828),
-            std::complex<double>(-0.3909314128950405, -0.5208053215270787),
-            std::complex<double>(-0.4159999364898488, -0.929797800647657),
-            std::complex<double>(-0.05289305288679613, 0.7623008176129775),
-            std::complex<double>(0.3810204528687382, 0.5443453788782495),
-            std::complex<double>(-0.182901423575166, 0.5832026946660676),
-            std::complex<double>(0.5132115703426237, -0.2746174894763567),
-            std::complex<double>(-0.05772567034291853, 0.2078453112062857)}), 
+        c({basic::Cmplx(0.759414027655581, 0.5692286126871828),
+            basic::Cmplx(-0.3909314128950405, -0.5208053215270787),
+            basic::Cmplx(-0.4159999364898488, -0.929797800647657),
+            basic::Cmplx(-0.05289305288679613, 0.7623008176129775),
+            basic::Cmplx(0.3810204528687382, 0.5443453788782495),
+            basic::Cmplx(-0.182901423575166, 0.5832026946660676),
+            basic::Cmplx(0.5132115703426237, -0.2746174894763567),
+            basic::Cmplx(-0.05772567034291853, 0.2078453112062857)}), 
         
-        x({std::complex<double>(0.5022381178753841, 0.6970911204735433),
-            std::complex<double>(-0.2660269666516346, 0.3408308392987081),
-            std::complex<double>(0.07225847489108794, -0.4890141431874784),
-            std::complex<double>(-0.6984620632833527, 0.3385783677682219),
-            std::complex<double>(0.6724492933394415, 0.6822524332030151)}), 
+        x({basic::Cmplx(0.5022381178753841, 0.6970911204735433),
+            basic::Cmplx(-0.2660269666516346, 0.3408308392987081),
+            basic::Cmplx(0.07225847489108794, -0.4890141431874784),
+            basic::Cmplx(-0.6984620632833527, 0.3385783677682219),
+            basic::Cmplx(0.6724492933394415, 0.6822524332030151)}), 
         
-        expect({std::complex<double>(1.910143035375531, -0.9284375830984708),
-            std::complex<double>(0.8535065511576807, 0.7411792224928896),
-            std::complex<double>(0.4293431036176729, 0.9751281975153519),
-            std::complex<double>(0.1349251253981901, 0.4761603912848932),
-            std::complex<double>(1.294817005520558, -1.875701442672196)});
+        expect({basic::Cmplx(1.910143035375531, -0.9284375830984708),
+            basic::Cmplx(0.8535065511576807, 0.7411792224928896),
+            basic::Cmplx(0.4293431036176729, 0.9751281975153519),
+            basic::Cmplx(0.1349251253981901, 0.4761603912848932),
+            basic::Cmplx(1.294817005520558, -1.875701442672196)});
 
     for(unsigned i=0; i<5; ++i)
     {
-        std::complex<double> result = simpoly::op::evaluate(c, x[i]);
+        basic::Cmplx result = basic::evaluate(c, x[i]);
         ASSERT_NEAR(expect[i].real(), result.real(), 1e-12);
         ASSERT_NEAR(expect[i].imag(), result.imag(), 1e-12);
     }
@@ -256,7 +263,7 @@ TEST(PolynomialEvaluation, RealRootPolyPointer)
     
     for(unsigned i=0; i<11; ++i)
     {
-        double result = simpoly::op::evaluate_root(l, r, 13, x[i]);
+        double result = basic::evaluate_from_root(l, r, 13, x[i]);
         ASSERT_NEAR(expect[i], result, 1e-12);
     }
     
@@ -267,7 +274,7 @@ TEST(PolynomialEvaluation, RealRootPolyValarray)
 {
     double l = 5.0;
     
-    std::valarray<double>
+    basic::DArry
         
         r({0.7634365506829128, 0.8181683656769851, 0.6127459448202521,
             -0.8553740751871957, -0.118458881248837, 0.2596055040782295,
@@ -285,7 +292,7 @@ TEST(PolynomialEvaluation, RealRootPolyValarray)
     
     for(unsigned i=0; i<11; ++i)
     {
-        double result = simpoly::op::evaluate_root(l, r, x[i]);
+        double result = basic::evaluate_from_root(l, r, x[i]);
         ASSERT_NEAR(expect[i], result, 1e-12);
     }
 }

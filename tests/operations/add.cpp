@@ -7,12 +7,11 @@
  */
 
 
-# include <valarray>
 # include <random>
 
 # include <gtest/gtest.h>
 
-# include "operations.h"
+# include "basic.h"
 
 
 extern std::default_random_engine generator;
@@ -33,7 +32,7 @@ TEST(PolynomialAdd, EqualLength)
         p2[i] = dist2(generator);
     }
     
-    result = simpoly::op::add(p1, p2);
+    result = simpoly::basic::add(p1, p2);
     
     for(unsigned i=0; i<len; ++i)
         ASSERT_NEAR(p1[i]+p2[i], result[i], 1e-12);
@@ -53,7 +52,7 @@ TEST(PolynomialAdd, FirstOneLonger)
     for(unsigned i=0; i<len; ++i) p1[i] = rdouble(generator);
     for(unsigned i=0; i<p2.size(); ++i) p2[i] = rdouble(generator);
     
-    result = simpoly::op::add(p1, p2); 
+    result = simpoly::basic::add(p1, p2); 
     for(unsigned i=0; i<p2.size(); ++i) ASSERT_NEAR(p1[i]+p2[i], result[i], 1e-12);
     for(unsigned i=p2.size(); i<len; ++i) ASSERT_NEAR(p1[i], result[i], 1e-12);
 }
@@ -72,7 +71,7 @@ TEST(PolynomialAdd, SecondOneLonger)
     for(unsigned i=0; i<len; ++i) p1[i] = rdouble(generator);
     for(unsigned i=0; i<p2.size(); ++i) p2[i] = rdouble(generator);
     
-    result = simpoly::op::add(p2, p1); 
+    result = simpoly::basic::add(p2, p1); 
     for(unsigned i=0; i<p2.size(); ++i) ASSERT_NEAR(p1[i]+p2[i], result[i], 1e-12);
     for(unsigned i=p2.size(); i<len; ++i) ASSERT_NEAR(p1[i], result[i], 1e-12);
 }
