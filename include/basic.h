@@ -98,6 +98,19 @@ Arry<T> divide(const Arry<T> &p1, const Arry<T> &p2, Arry<T> &r);
 template <typename T>
 Arry<T> divide(const Arry<T> &p1, const Arry<T> &p2);
 
+/**
+ * \brief Find greatest common divisor of two polynomials.
+ *
+ * \tparam T Base type of the entries in coefficient array.
+ * \param p1 [in] A std::valarray representing the first polynomial.
+ * \param p2 [in] A std::valarray representing the second polynomial.
+ * \param tol [in] Tolerance (default 1e-8).
+ *
+ * \return The greatest common divisor polynomial.
+ */
+template <typename T>
+Arry<T> GCD(const Arry<T> &p1, const Arry<T> &p2, const double tol=1e-8);
+
 
 /**
  * \brief Evaluate polynomial value at a specified location.
@@ -211,6 +224,8 @@ T newton_raphson(const Arry<T> &coeffs, const T guess, const double tol=1e-13);
  * Aberth method can find all roots at once. However, it only works on complex
  * plane. So the returned roots are complex numbers, even the imaginary part is
  * very close to zero (or even equal to zero).
+ * 
+ * Aberth method is good for simple roots but bad when there are multiple roots.
  *
  * \param coeffs [in] A std::valarray representing polynomial coefficients.
  * \param guess [in] A std::valarray of initial guess to all roots.
@@ -291,42 +306,50 @@ CArry aberth(const CArry &coeffs, const double tol=1e-13);
 CArry aberth(const DArry &coeffs, const double tol=1e-13);
 
 /**
- * \brief Aberth method for root finding.
+ * \brief Root-finding function that implements method from Yan & Chieng (2006)
  * 
- * An overloaded version of Aberth method that assumes all roots are real
- * numbers. This function still uses Aberth method, which is operated on
- * complex plane. So by the end of Aberth method, it just assumes all roots
- * are real, ignores imaginary part, and returns only real parts.
+ * The method proposed by Yan & Chieng can handle roots with multiplicities
+ * greater than 1.
  *
  * \param coeffs [in] A std::valarray representing polynomial coefficients.
- * \param guess [in] A std::valarray of initial guess.
  * \param tol [in] Tolerance that mimics zero.
- * \param no_ignore_cmplx [in] Indicating whether to throw an exception if the
- *        imaginary part of any root is non-trivial; default is `false`.
  *
  * \return A std::valarray of all roots.
  */
-DArry aberth_real(const DArry &coeffs, const DArry &guess, 
-        const double tol=1e-13, const bool no_ignore_cmplx=false);
+CArry yan_and_chieng_2006(const CArry &coeffs, const double tol=1e-13);
 
 /**
- * \brief Aberth method for root finding.
+ * \brief Root-finding function that implements method from Yan & Chieng (2006)
  * 
- * An overloaded version of Aberth method that assumes all roots are real
- * numbers. This function still uses Aberth method, which is operated on
- * complex plane. So by the end of Aberth method, it just assumes all roots
- * are real, ignores imaginary part, and returns only real parts.
- * 
- * This version uses default initial guess.
+ * Overloaded version the accepts std::valarray<double>.
  *
  * \param coeffs [in] A std::valarray representing polynomial coefficients.
  * \param tol [in] Tolerance that mimics zero.
- * \param no_ignore_cmplx [in] Indicating whether to throw an exception if the
- *        imaginary part of any root is non-trivial; default is `false`.
  *
  * \return A std::valarray of all roots.
  */
-DArry aberth_real(const DArry &coeffs, 
-        const double tol=1e-13, const bool no_ignore_cmplx=false);
+CArry yan_and_chieng_2006(const DArry &coeffs, const double tol=1e-13);
+
 } // end of namespace basic
 } // end of namespace simpoly
+
+    
+/**
+ * \brief Overloaded output stream for CArry.
+ *
+ * \param os [in] An output stream.
+ * \param v [in] A CArry.
+ *
+ * \return The output stream.
+ */
+std::ostream &operator<<(std::ostream &os, const simpoly::basic::CArry &v);
+    
+/**
+ * \brief Overloaded output stream for DArry.
+ *
+ * \param os [in] An output stream.
+ * \param v [in] A DArry.
+ *
+ * \return The output stream.
+ */
+std::ostream &operator<<(std::ostream &os, const simpoly::basic::DArry &v);

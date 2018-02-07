@@ -8,6 +8,8 @@
 
 
 # include <algorithm>
+# include <numeric>
+# include <cmath>
 
 # include "basic.h"
 # include "exceptions.h"
@@ -129,5 +131,59 @@ template CArry divide(const CArry &p1, const CArry &p2, CArry &r);
 template DArry divide(const DArry &p1, const DArry &p2);
 template CArry divide(const CArry &p1, const CArry &p2);
 
+
+// GCD
+template <typename T>
+Arry<T> GCD(const Arry<T> &p1, const Arry<T> &p2, const double tol)
+{
+    Arry<T> a, b, q, r;
+    double delta;
+    
+    a = p1;
+    b = p2 / (*(std::end(p2)-1));
+    auto f = [](const double &x, const T &y) -> double { return x + std::norm(y); };
+    
+    int iter = 1;
+    do
+    {
+        q = divide(a, b, r);
+        
+        delta = std::sqrt(
+                std::accumulate(std::begin(r), std::end(r), 0.0, f) /
+                std::accumulate(std::begin(b), std::end(b), 0.0, f));
+        
+        a = b;
+        b = r / (*(std::end(r)-1));
+        
+        iter += 1;
+        if (iter > 10000) throw exceptions::InfLoop(__FILE__, __LINE__);
+    } while(delta > tol);
+    
+    return a;
+}
+
+template DArry GCD(const DArry &p1, const DArry &p2, const double tol);
+template CArry GCD(const CArry &p1, const CArry &p2, const double tol);
+
 } // end of namespace basic
 } // end of namespace simpoly
+
+
+// operator << for DArry
+std::ostream &operator<<(std::ostream &os, const simpoly::basic::DArry &v)
+{
+    for(auto it=std::begin(v); it<std::end(v)-1; ++it)
+        os << *it << ", ";
+    os << (*(std::end(v)-1));
+    return os;
+}
+
+
+// operator << for CArry
+std::ostream &operator<<(std::ostream &os, const simpoly::basic::CArry &v)
+{
+    for(auto it=std::begin(v); it<std::end(v)-1; ++it)
+        os << *it << ", ";
+    os << (*(std::end(v)-1));
+    return os;
+}

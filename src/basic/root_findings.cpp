@@ -55,24 +55,20 @@ CArry aberth(const CArry &coeffs, const CArry &guess, const double tol)
     // alias to the length of provided coefficient array
     const auto &len = coeffs.size();
     
-    // expected number of roots
-    const int &n = len - 1;
-    
 # ifndef NDEBUG
     using namespace exceptions;
     if (len == 0) throw ZeroCoeffsLength(__FILE__, __LINE__);
-    if (n != guess.size()) throw UnmatchedLength(__FILE__, __LINE__, n, guess.size());
 # endif
     
     // if degree is 0, no root exists; return a zero-length array
-    if (n == 0) return CArry(0);
+    if (len == 1) return CArry(0);
     
     // initialize initial guess through copying
     CArry rts(guess);
     
     // create a vector indicating if each root has been found
-    bool stop[n];
-    std::fill(stop, stop+n, false);
+    bool stop[guess.size()];
+    std::fill(stop, stop+guess.size(), false);
     
     // derivative
     CArry d = derivative(coeffs);
@@ -80,9 +76,9 @@ CArry aberth(const CArry &coeffs, const CArry &guess, const double tol)
     // an index to record the number of while iteration
     long iter = 0;
     
-    while (std::any_of(stop, stop+n, [](bool b){return !b;}))
+    while (std::any_of(stop, stop+guess.size(), [](bool b){return !b;}))
     {
-        for(unsigned int i=0; i<n; ++i)
+        for(unsigned int i=0; i<guess.size(); ++i)
         {
             const Cmplx &zi = rts[i]; // alias
             Cmplx temp, delta;
@@ -197,66 +193,72 @@ CArry aberth(const DArry &coeffs, const double tol)
 }
 
 
-DArry aberth_real(const DArry &coeffs, const DArry &guess, 
-        const double tol, const bool no_ignore_cmplx)
+CArry yan_and_chieng_2006(const CArry &coeffs, const double tol)
 {
-    // if degree is 0, no root exists; return a zero-length array
-    if (coeffs.size() == 1) return DArry(0);
+# ifndef NDEBUG
+    if (coeffs.size() == 0) throw exceptions::ZeroCoeffsLength(__FILE__, __LINE__);
+# endif
+
+    CArry     drv = derivative(coeffs); // direvative
+    CArry     agcd = GCD(coeffs, drv); // approximated GCD
+    CArry     q_coeffs = divide(coeffs, agcd); // f(x) / GCD
+    CArry     q_drv = divide(drv, agcd); // direvative / GCD
+    CArry     drv_q_coeffs = derivative(q_coeffs);
     
-    // get roots using algorithms that is specifically for complex roots
-    CArry z = aberth(coeffs, guess, tol);;
+    // simple roots from q_coeffs
+    CArry       simples1 = aberth(q_coeffs, tol); 
     
-    // create an array to hold real roots
-    DArry roots(z.size());
+    // refine simple roots with original polynomial `coeffs`
+    CArry       simples2 = aberth(coeffs, simples1, tol);
     
-    // eliminate imagine part
-    for(unsigned int i=0; i<z.size(); ++i)
+    // an array for final results
+    CArry       result(coeffs.size() - 1);
+    
+    unsigned k = 0; // index for result
+    for(unsigned i=0; i<simples1.size(); ++i)
     {
-        if ((no_ignore_cmplx) && (std::abs(z[i].imag()) >= tol))
-            throw exceptions::ComplexRoot(
-                    __FILE__, __LINE__, z[i].real(), z[i].imag());
+        // claculate multiplicity
+        unsigned m = int((evaluate(q_drv, simples1[i]) /
+                evaluate(drv_q_coeffs, simples1[i])).real() + 0.5);
         
-        roots[i] = z[i].real();
+        // choose the best one
+        if (m > 1)
+        {
+            double e1 = std::norm(evaluate(drv, simples1[i])) + 
+                        std::norm(evaluate(coeffs, simples1[i])),
+                   e2 = std::abs(evaluate(drv, simples2[i])) + 
+                        std::norm(evaluate(coeffs, simples2[i]));
+            
+            if (e1 < e2) result[k] = simples1[i];
+            else result[k] = simples2[i];
+            k += 1;
+        
+            // duplicate multiple roots
+            for(unsigned mi=1; mi<m; ++mi)
+            {
+                result[k] = result[k-1];
+                k += 1;
+            }
+        }
+        else
+        {
+            double e1 = std::abs(evaluate(coeffs, simples1[i])),
+                   e2 = std::abs(evaluate(coeffs, simples2[i]));
+            
+            if (e1 < e2) result[k] = simples1[i];
+            else result[k] = simples2[i];
+            k += 1;
+        }
     }
     
-    return roots;
+    return result;
 }
 
 
-DArry aberth_real(const DArry &coeffs, 
-        const double tol, const bool no_ignore_cmplx)
+CArry yan_and_chieng_2006(const DArry &coeffs, const double tol)
 {
-# ifndef NDEBUG
-    using namespace exceptions;
-    if (coeffs.size() == 0) throw ZeroCoeffsLength(__FILE__, __LINE__);
-# endif
-    
-    // if degree is 0, no root exists; return a zero-length array
-    if (coeffs.size() == 1) return DArry(0);
-    
-    // initialize initial guess through copying
-    CArry guess(coeffs.size()-1);
-    
-    std::iota(std::begin(guess), std::end(guess), 0.0);
-    guess = std::pow(Cmplx(0.5, 0.5), guess);
-    
-    // get roots
-    CArry z = aberth(coeffs, guess, tol);;
-    
-    // create an array to hold real roots
-    DArry roots(z.size());
-    
-    // eliminate imagine part
-    for(unsigned int i=0; i<z.size(); ++i)
-    {
-        if ((no_ignore_cmplx) && (std::abs(z[i].imag()) >= tol))
-            throw exceptions::ComplexRoot(
-                    __FILE__, __LINE__, z[i].real(), z[i].imag());
-        
-        roots[i] = z[i].real();
-    }
-    
-    return roots;
+    CArry C = to_CArry(coeffs);
+    return yan_and_chieng_2006(C, tol);
 }
 
 
