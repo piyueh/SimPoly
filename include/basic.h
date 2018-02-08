@@ -39,6 +39,31 @@ typedef Arry<Cmplx> CArry;
  * \return A CArry (i.e., std::valarray<std::complex<double>>).
  */
 CArry to_CArry(const DArry &p);
+
+/**
+ * \brief Get polynomial coefficients by providing roots.
+ *
+ * \tparam T Base type of entries in the array of roots.
+ * \param l [in] The leading coefficient of the polynomial.
+ * \param rts [in] An raw pointer to the array of roots.
+ * \param len [in] The length of the array of roots.
+ *
+ * \return A std::valarray representing the coefficients.
+ */
+template <typename T>
+Arry<T> to_coefficients(const T &l, const T* const &rts, const int len);
+
+/**
+ * \brief Get polynomial coefficients by providing roots.
+ *
+ * \tparam T Base type of entries in the array of roots.
+ * \param l [in] The leading coefficient of the polynomial.
+ * \param rts [in] An std::valarray of roots.
+ *
+ * \return A std::valarray representing the coefficients.
+ */
+template <typename T>
+Arry<T> to_coefficients(const T &l, const Arry<T> &rts);
     
     
 /**

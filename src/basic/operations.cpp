@@ -165,6 +165,33 @@ Arry<T> GCD(const Arry<T> &p1, const Arry<T> &p2, const double tol)
 template DArry GCD(const DArry &p1, const DArry &p2, const double tol);
 template CArry GCD(const CArry &p1, const CArry &p2, const double tol);
 
+
+// find polynomial coefficients from roots
+template <typename T>
+Arry<T> to_coefficients(const T &l, const T* const &rts, const int len)
+{
+# ifndef NDEBUG
+    if (len < 0) throw exceptions::NegativeCoeffsLength(__FILE__, __LINE__, len);
+# endif
+    
+    // polynomial f(x) = constant
+    if (len == 0)
+        return {l};
+    else
+        return multiply({-rts[0], 1.0}, to_coefficients(l, rts+1, len-1));
+}
+
+template <typename T>
+Arry<T> to_coefficients(const T &l, const Arry<T> &rts)
+{
+    return to_coefficients(l, &rts[0], rts.size());
+}
+
+template DArry to_coefficients(const double &l, const double* const &rts, const int len);
+template CArry to_coefficients(const Cmplx &l, const Cmplx* const &rts, const int len);
+template DArry to_coefficients(const double &l, const DArry &rts);
+template CArry to_coefficients(const Cmplx &l, const CArry &rts);
+
 } // end of namespace basic
 } // end of namespace simpoly
 
