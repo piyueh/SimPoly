@@ -11,9 +11,8 @@ SET(TEST_SRC ${PROJECT_SOURCE_DIR}/tests)
 # add test targets
 ADD_EXECUTABLE(basic 
     ${TEST_SRC}/basic/main.cpp
-    ${TEST_SRC}/basic/add.cpp
-    ${TEST_SRC}/basic/multiply.cpp
-    ${TEST_SRC}/basic/divide.cpp
+    ${TEST_SRC}/basic/operations1.cpp
+    ${TEST_SRC}/basic/operations2.cpp
     ${TEST_SRC}/basic/evaluate.cpp
     ${TEST_SRC}/basic/calculus.cpp
     ${TEST_SRC}/basic/find_roots.cpp)
