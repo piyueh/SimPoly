@@ -16,14 +16,14 @@ namespace simpoly
 namespace basic
 {
 
-template <typename T> 
+template <typename T>
 T evaluate(const T* const &bg, const int len, const T x)
 {
 # ifndef NDEBUG
     if (len == 0) throw exceptions::ZeroCoeffsLength(__FILE__, __LINE__);
     if (len < 0) throw exceptions::NegativeCoeffsLength(__FILE__, __LINE__, len);
 # endif
-    
+
     if (len == 1)
         return *bg;
     else
@@ -44,7 +44,7 @@ T evaluate_from_root(const T l, const T* const &bg, const int degree, const T x)
 # ifndef NDEBUG
     if (degree < 0) throw exceptions::NegativeDegree(__FILE__, __LINE__, degree);
 # endif
-    
+
     if (degree == 0)
         return l;
     else
@@ -64,14 +64,14 @@ template double evaluate(const double* const &bg, const int len, const double x)
 template Cmplx evaluate(const Cmplx* const &bg, const int len, const Cmplx x);
 template double evaluate(const DArry &coeffs, const double x);
 template Cmplx evaluate(const CArry &coeffs, const Cmplx x);
-template double evaluate_from_root(const double l, 
+template double evaluate_from_root(const double l,
         const double* const &bg, const int degree, const double x);
-template Cmplx evaluate_from_root(const Cmplx l, 
+template Cmplx evaluate_from_root(const Cmplx l,
         const Cmplx* const &bg, const int degree, const Cmplx x);
 template double evaluate_from_root(
         const double l, const DArry &roots, const double x);
 template Cmplx evaluate_from_root(
         const Cmplx l, const CArry &roots, const Cmplx x);
-    
+
 } // end of namespace basic
 } // end of namespace simpoly

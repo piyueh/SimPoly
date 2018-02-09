@@ -25,23 +25,23 @@ Arry<T> derivative(const Arry<T> &coeffs)
 {
     // alias to the length of provided coefficient array
     const auto &len = coeffs.size();
-    
+
 # ifndef NDEBUG
     if (len == 0) throw exceptions::ZeroCoeffsLength(__FILE__, __LINE__);
 # endif
-    
-    if (len == 1) return Arry<T>(0.0, 1);
-    
+
+    if (len == 1) return Arry<T>(1, 0.0);
+
     // initialize result using values in coeffs[1:]
-    Arry<T> result(coeffs[std::slice(1, len-1, 1)]);
-    
+    Arry<T> result(coeffs.begin()+1, coeffs.end());
+
     // alias to the beginning of `result` minus 1
-    const auto &bg = std::begin(result) - 1;
-    
+    const auto &bg = result.data() - 1;
+
     // calculate correct values in-place
-    std::for_each(std::begin(result), std::end(result),
+    std::for_each(result.begin(), result.end(),
             [&bg](T &x){x *= T(&x - bg);});
-    
+
     return result;
 }
 
@@ -51,21 +51,21 @@ Arry<T> integral(const Arry<T> &coeffs)
 {
     // alias to the length of provided coefficient array
     const auto &len = coeffs.size();
-    
+
 # ifndef NDEBUG
     if (len == 0) throw exceptions::ZeroCoeffsLength(__FILE__, __LINE__);
 # endif
-    
+
     // initialize result with len+1 zeros
-    Arry<T> result(0.0, len+1);
-    
+    Arry<T> result(len+1, 0.0);
+
     // alias to the beginning of coeffs minus 1
-    const auto &bg = std::begin(coeffs) - 1;
-    
+    const auto &bg = coeffs.data() - 1;
+
     // perform result[i+1] = coeffs[i] / (i + 1)
-    std::transform(std::begin(coeffs), std::end(coeffs), std::begin(result)+1,
+    std::transform(coeffs.begin(), coeffs.end(), result.begin()+1,
             [&bg](const T &x)->T{return x / T(&x - bg);});
-    
+
     return result;
 }
 
@@ -75,5 +75,6 @@ template DArry derivative(const DArry &coeffs);
 template CArry derivative(const CArry &coeffs);
 template DArry integral(const DArry &coeffs);
 template CArry integral(const CArry &coeffs);
+
 } // end of namespace basic
 } // end of namespace simpoly

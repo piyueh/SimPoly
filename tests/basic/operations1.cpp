@@ -26,7 +26,7 @@ TEST(PolynomialCoeffs, GetCoeffsFromRoots1)
             -0.9125881264026460826,  0.2467728385548548786,
             -0.4448851063326948463, -0.6172124325075281082,
             -0.6301262014641872966});
-    
+
     basic::DArry expect({
             -0.0097194008368678246,  0.0203713227801400679,
             0.1774520322384245952, -0.1187869060899048868,
@@ -36,7 +36,7 @@ TEST(PolynomialCoeffs, GetCoeffsFromRoots1)
     basic::DArry result = basic::to_coefficients(1.0, roots);
 
     ASSERT_EQ(expect.size(), result.size());
-    
+
     for(unsigned i=0; i<expect.size(); ++i)
         ASSERT_NEAR(expect[i], result[i], 1e-10);
 }
@@ -47,7 +47,7 @@ static auto f = [](basic::Cmplx i, basic::Cmplx j)->bool {
     {
         if (std::abs(i.real()-j.real()) <= 1e-11)
             if (i.imag() <= j.imag()) return true;
-        
+
         if ((i.real()-j.real()) < -1e-11) return true;
     }
     if ((std::abs(i)-std::abs(j)) < -1e-11) return true;
@@ -73,7 +73,7 @@ TEST(PolynomialCoeffs, GetCoeffsFromRoots2)
             basic::Cmplx(0.6425671238360994852, -0.8227184096042670092),
             basic::Cmplx(-0.8746249058224726536, 0.4526170928635313562),
             basic::Cmplx(-0.8405665222993630170, 0.4624841604488800773)});
-    
+
     basic::CArry expect({
             basic::Cmplx(0.1284473674676091248, 0.027106308015679835) ,
             basic::Cmplx(-0.0055811935483588704, 0.5895676656919293102),
@@ -97,7 +97,7 @@ TEST(PolynomialCoeffs, GetCoeffsFromRoots2)
     basic::CArry result = basic::to_coefficients(basic::Cmplx(1.0), roots);
 
     ASSERT_EQ(expect.size(), result.size());
-    
+
     for(unsigned i=0; i<expect.size(); ++i)
     {
         ASSERT_NEAR(expect[i].real(), result[i].real(), 1e-10);
@@ -110,19 +110,19 @@ TEST(PolynomialAdd, EqualLength)
 {
     std::uniform_int_distribution<int> dist1(1, 20);
     std::uniform_real_distribution<double> dist2(-5.0, 5.0);
-    
+
     int len = dist1(generator);
-    
-    std::valarray<double> p1(len), p2(len), result(len);
-    
+
+    basic::DArry p1(len), p2(len), result(len);
+
     for(unsigned i=0; i<len; ++i)
     {
         p1[i] = dist2(generator);
         p2[i] = dist2(generator);
     }
-    
+
     result = simpoly::basic::add(p1, p2);
-    
+
     for(unsigned i=0; i<len; ++i)
         ASSERT_NEAR(p1[i]+p2[i], result[i], 1e-12);
 }
@@ -130,18 +130,18 @@ TEST(PolynomialAdd, EqualLength)
 TEST(PolynomialAdd, FirstOneLonger)
 {
     std::uniform_int_distribution<int> dist1(1, 20);
-    
+
     int len = dist1(generator);
-    std::valarray<double> p1(len), result(len);
-    
+    basic::DArry p1(len), result(len);
+
     std::uniform_int_distribution<int> dist2(0, len-1);
-    std::valarray<double> p2(dist2(generator));
-    
+    basic::DArry p2(dist2(generator));
+
     std::uniform_real_distribution<double> rdouble(-5.0, 5.0);
     for(unsigned i=0; i<len; ++i) p1[i] = rdouble(generator);
     for(unsigned i=0; i<p2.size(); ++i) p2[i] = rdouble(generator);
-    
-    result = simpoly::basic::add(p1, p2); 
+
+    result = simpoly::basic::add(p1, p2);
     for(unsigned i=0; i<p2.size(); ++i) ASSERT_NEAR(p1[i]+p2[i], result[i], 1e-12);
     for(unsigned i=p2.size(); i<len; ++i) ASSERT_NEAR(p1[i], result[i], 1e-12);
 }
@@ -149,18 +149,18 @@ TEST(PolynomialAdd, FirstOneLonger)
 TEST(PolynomialAdd, SecondOneLonger)
 {
     std::uniform_int_distribution<int> dist1(1, 20);
-    
+
     int len = dist1(generator);
-    std::valarray<double> p1(len), result(len);
-    
+    basic::DArry p1(len), result(len);
+
     std::uniform_int_distribution<int> dist2(0, len-1);
-    std::valarray<double> p2(dist2(generator));
-    
+    basic::DArry p2(dist2(generator));
+
     std::uniform_real_distribution<double> rdouble(-5.0, 5.0);
     for(unsigned i=0; i<len; ++i) p1[i] = rdouble(generator);
     for(unsigned i=0; i<p2.size(); ++i) p2[i] = rdouble(generator);
-    
-    result = simpoly::basic::add(p2, p1); 
+
+    result = simpoly::basic::add(p2, p1);
     for(unsigned i=0; i<p2.size(); ++i) ASSERT_NEAR(p1[i]+p2[i], result[i], 1e-12);
     for(unsigned i=p2.size(); i<len; ++i) ASSERT_NEAR(p1[i], result[i], 1e-12);
 }
@@ -173,29 +173,29 @@ TEST(PolynomialGCD, GCD1)
         -1.11900000e+03,  -1.48000000e+02,   4.43000000e+02,
         3.26000000e+02,   1.03000000e+02,   1.60000000e+01,
         1.00000000e+00});
-    
+
     basic::DArry q1_expect({-108., -108., 45., 104., 54., 12., 1.});
     basic::DArry q2_expect({18., 21., 8., 1.});
     basic::DArry q3_expect({3., 1.});
     basic::DArry q4_expect({1.});
-    
+
     basic::DArry q1 = basic::GCD(p1, basic::derivative(p1));
     basic::DArry q2 = basic::GCD(q1, basic::derivative(q1));
     basic::DArry q3 = basic::GCD(q2, basic::derivative(q2));
     basic::DArry q4 = basic::GCD(q3, basic::derivative(q3));
-    
+
     for(unsigned i=0; i<q1_expect.size(); ++i)
         ASSERT_NEAR(q1_expect[i], q1[i], 1e-8);
-    
+
     for(unsigned i=0; i<q2_expect.size(); ++i)
         ASSERT_NEAR(q2_expect[i], q2[i], 1e-8);
-    
+
     for(unsigned i=0; i<q3_expect.size(); ++i)
         ASSERT_NEAR(q3_expect[i], q3[i], 1e-8);
-    
+
     for(unsigned i=0; i<q4_expect.size(); ++i)
         ASSERT_NEAR(q4_expect[i], q4[i], 1e-8);
-    
+
 }
 
 TEST(PolynomialGCD, GCD2)
@@ -206,19 +206,19 @@ TEST(PolynomialGCD, GCD2)
             -4.3769681353357492437e-01,  -1.2069048603868517411e+00,
             -2.8638873139566145554e-02,   1.6438835517368903805e+00,
             1.0000000000000000000e+00});
-    
+
     basic::DArry q1_expect({-0.2431327906295455976, 1.0});
     basic::DArry q2_expect({1.});
-    
+
     basic::DArry q1 = basic::GCD(p1, basic::derivative(p1));
     basic::DArry q2 = basic::GCD(q1, basic::derivative(q1));
-    
+
     for(unsigned i=0; i<q1_expect.size(); ++i)
         ASSERT_NEAR(q1_expect[i], q1[i], 1e-8);
-    
+
     for(unsigned i=0; i<q2_expect.size(); ++i)
         ASSERT_NEAR(q2_expect[i], q2[i], 1e-8);
-    
+
 }
 
 TEST(PolynomialGCD, GCD3)
@@ -231,22 +231,22 @@ TEST(PolynomialGCD, GCD3)
             -6.3264000000000010004e+01,   5.2000000000000014211e+01,
             3.5999999999999992895e+01,  -6.0000000000000000000e+01,
             2.0000000000000000000e+01});
-    
+
     basic::DArry q1_expect({1.0, -2.0, 1.0});
     basic::DArry q2_expect({-1.0, 1.0});
     basic::DArry q3_expect({1.});
-    
+
     basic::DArry q1 = basic::GCD(p1, basic::derivative(p1));
     basic::DArry q2 = basic::GCD(q1, basic::derivative(q1));
     basic::DArry q3 = basic::GCD(q2, basic::derivative(q2));
-    
+
     for(unsigned i=0; i<q1_expect.size(); ++i)
         ASSERT_NEAR(q1_expect[i], q1[i], 1e-8);
-    
+
     for(unsigned i=0; i<q2_expect.size(); ++i)
         ASSERT_NEAR(q2_expect[i], q2[i], 1e-8);
-    
+
     for(unsigned i=0; i<q3_expect.size(); ++i)
         ASSERT_NEAR(q3_expect[i], q3[i], 1e-8);
-    
+
 }
