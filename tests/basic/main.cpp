@@ -1,5 +1,5 @@
 /**
- * \file test_operations.cpp
+ * \file tests/basic/main.cpp
  * \brief Unit tests for functions in the namespace op.
  * \author Pi-Yueh Chuang
  * \version beta
