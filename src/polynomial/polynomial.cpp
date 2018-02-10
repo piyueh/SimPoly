@@ -231,7 +231,7 @@ unsigned Polynomial::degree() const { return _d; }
 unsigned Polynomial::n_real_roots() const { return _nrr; }
 
 // get number of complex roots
-unsigned Polynomial::c_real_roots() const { return _ncr; }
+unsigned Polynomial::n_cmplx_roots() const { return _ncr; }
 
 // get coefficients
 DArry Polynomial::coef() const { return _coef; }

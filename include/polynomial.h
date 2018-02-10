@@ -258,7 +258,7 @@ public:
      *
      * \return The number of complex roots.
      */
-    unsigned c_real_roots() const;
+    unsigned n_cmplx_roots() const;
 
     /**
      * \brief Get a vector of coefficients.
