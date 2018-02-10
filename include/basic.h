@@ -41,6 +41,31 @@ typedef Arry<Cmplx> CArry;
 CArry to_CArry(const DArry &p);
 
 /**
+ * \brief Convert a CArry to DArry.
+ *
+ * This library intends to operate in real space, even though polynomials may
+ * have complex roots. In other words, the coefficients of a polynomial, p(x),
+ * should be real numbers, and x should also be a real number.
+ *
+ * However, due to the exist of complex roots, we some times need to use vectors
+ * of complex numbers for calculations. The result after calculations may be
+ * that all imaginary parts in the vectors are zero or within a tolerence. So
+ * this function intends to conver such vectors back to vectors of pure real
+ * numbers. For exmaple, calculating polynomial coefficients from roots may be
+ * operated with a complex vector of roots and returns a complex vector holding
+ * real-number coefficients. In this case, we can turn this resulting complex
+ * vector to real-number vector with this function.
+ *
+ * It's users' responsibility to ensure the input complex array is indeed holding
+ * only real numbers.
+ *
+ * \param p [in] A CArry (i.e., std::vector<std::complex<double>>).
+ *
+ * \return A DArry (i.e., std::vector<double>).
+ */
+DArry to_DArry(const CArry &p, const double tol=1e-12);
+
+/**
  * \brief Get polynomial coefficients by providing roots.
  *
  * \tparam T Base type of entries in the array of roots.

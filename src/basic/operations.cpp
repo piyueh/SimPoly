@@ -177,6 +177,21 @@ CArry to_CArry(const DArry &p)
     return CArry(p.begin(), p.end());
 }
 
+DArry to_DArry(const CArry &p, const double tol)
+{
+    DArry d(p.size());
+
+# ifndef NDEBUG
+    for(const auto &it: p) if (std::abs(it.imag()) > tol)
+        throw exceptions::FoundComplexNumber(__FILE__, __LINE__, it);
+# endif
+
+    std::transform(p.begin(), p.end(), d.begin(),
+            [](const Cmplx &x)->double{return x.real();});
+
+    return d;
+}
+
 
 // GCD
 template <typename T>
