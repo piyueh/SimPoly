@@ -24,7 +24,7 @@ TARGET_LINK_LIBRARIES(basic ${GTEST_BOTH_LIBRARIES} simpoly)
 # add test targets: polynomial
 ADD_EXECUTABLE(polynomial 
     ${TEST_SRC}/polynomial/main.cpp
-    ${TEST_SRC}/polynomial/initializer.cpp
+    ${TEST_SRC}/polynomial/initialization.cpp
     )
 
 TARGET_INCLUDE_DIRECTORIES(polynomial PRIVATE ${GTEST_INCLUDE_DIRS})
