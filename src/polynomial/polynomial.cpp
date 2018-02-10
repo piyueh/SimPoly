@@ -6,77 +6,280 @@
  * \date 2018-01-28
  */
 
+# include <cmath>
 
+# include "exceptions.h"
 # include "polynomial.h"
 
 
 using namespace simpoly::basic;
+using namespace simpoly::exceptions;
 
-
-# define NotImplemented \
-    throw std::string("Function in ") + __FILE__ + \
-        "(line " + std::to_string(__LINE__) +") not implemented yet.";
 
 namespace simpoly
 {
 namespace poly
 {
-    
-Polynomial::Polynomial(Polynomial &&p) { NotImplemented; }
 
-Polynomial::Polynomial(const DArry &coef): _coef(coef) { NotImplemented; }
+// copy constructor
+Polynomial::Polynomial(const Polynomial &p) = default;
 
-Polynomial::Polynomial(const double l, const DArry &rroots) { NotImplemented; }
+// move constructor
+Polynomial::Polynomial(Polynomial &&p) = default;
 
-Polynomial::Polynomial(const double l, const CArry &croots) { NotImplemented; }
+// constructor
+Polynomial::Polynomial(const DArry &coef, const PolyType &type):
+    _type(type) { set(coef); }
 
-Polynomial::Polynomial(const double l, 
-        const DArry &rroots, const CArry &croots) { NotImplemented; }
+// constructor
+Polynomial::Polynomial(const double l, const DArry &roots, const PolyType &type):
+    _type(type) { set(l, roots); }
 
-Polynomial::Polynomial(const DArry &coef, const DArry &rroots) { NotImplemented; }
+// constructor
+Polynomial::Polynomial(const double l, const CArry &roots, const PolyType &type):
+    _type(type) { set(l, roots); }
 
-Polynomial::Polynomial(const DArry &coef, const CArry &croots) { NotImplemented; }
+// constructor
+Polynomial::Polynomial(const double l, const DArry &rroots, const CArry &croots,
+        const PolyType &type): _type(type) { set(l, rroots, croots); }
 
-Polynomial::Polynomial(const DArry &coef, 
-        const DArry &roots, const CArry &croots) { NotImplemented; }
+// constructor
+Polynomial::Polynomial(const DArry &coef, const DArry &roots,
+        const PolyType &type): _type(type) { set(coef, roots); }
 
+// constructor
+Polynomial::Polynomial(const DArry &coef, const CArry &roots,
+        const PolyType &type): _type(type) { set(coef, roots); }
 
-void Polynomial::set(const DArry &coef) { NotImplemented; }
-
-void Polynomial::set(const double l, const DArry &r) { NotImplemented; }
-
-void Polynomial::set(const double l, const CArry &r) { NotImplemented; }
-
-void Polynomial::set(const double l, const DArry &rr, const CArry &rc) { NotImplemented; }
-
-void Polynomial::set(const DArry &coef, const DArry &rroots) { NotImplemented; }
-
-void Polynomial::set(const DArry &coef, const CArry &croots) { NotImplemented; }
-
-void Polynomial::set(const DArry &coef, 
-        const DArry &roots, const CArry &croots) { NotImplemented; }
-
-void Polynomial::set(const int d, const double value) { NotImplemented; }
+// constructor
+Polynomial::Polynomial(const DArry &coef, const DArry &rroots, const CArry &croots,
+        const PolyType &type): _type(type) { set(coef, rroots, croots); }
 
 
-unsigned Polynomial::degree() const { NotImplemented; }
+// re-set type
+void Polynomial::set(const PolyType &type) { _type = type; }
 
-DArry Polynomial::coef() const { NotImplemented; }
+// re-set coefficient
+void Polynomial::set(const DArry &coef, const double &tol)
+{
+    CArry tmp;
 
-CArry Polynomial::roots() const { NotImplemented; }
+    _coef = coef;// copy/move coef to _coef
+    _d = _coef.size() - 1; // get degree of polynomial
+    _nrr = _ncr = 0; // initialize _nrr and _ncr
+    _rroots.clear();
+    _croots.clear();
+    _use_roots = false;
 
-DArry Polynomial::real_roots() const { NotImplemented; }
+    tmp = yan_and_chieng_2006(_coef);// get roots
+    for(const auto &it: tmp)
+    {
+        if (std::abs(it.imag()) < tol)
+            _rroots.push_back(it.real());
+        else
+            _croots.push_back(it);
+    }
 
-CArry Polynomial::cmplx_roots() const { NotImplemented; }
+    _nrr = _rroots.size();
+    _ncr = _croots.size();
+}
 
+// re-set roots
+void Polynomial::set(const double l, const DArry &roots)
+{
+    _rroots = roots;
+    _d = _nrr = _rroots.size();
+    _use_roots = true;
 
-Polynomial Polynomial::deriv() const { NotImplemented; }
+    _croots.clear();
+    _ncr = 0;
 
-Polynomial Polynomial::integ() const { NotImplemented; }
+    _coef = to_coefficients(l, _rroots);
+}
 
+// re-set roots
+void Polynomial::set(const double l, const CArry &roots)
+{
+    _croots = roots;
+    _d = _ncr = _croots.size();
+    _use_roots = false;
 
-double Polynomial::operator()(const double x) const { NotImplemented; }
+    _rroots.clear();
+    _nrr = 0;
 
-    
+    // note this Polynomial class can only handle real-number coefficients
+    _coef = to_DArry(to_coefficients(Cmplx(l), _croots));
+}
+
+// re-set roots
+void Polynomial::set(const double l, const DArry &rroots, const CArry &croots)
+{
+    _rroots = rroots;
+    _croots = croots;
+
+    _nrr = _rroots.size();
+    _ncr = _croots.size();
+    _d = _nrr + _ncr;
+
+    _use_roots = false;
+
+    // note this Polynomial class can only handle real-number coefficients
+    _coef = to_DArry(to_coefficients(Cmplx(l), _croots));
+    _coef = multiply(_coef, to_coefficients(1.0, _rroots));
+}
+
+// re-set both roots and coefficients
+void Polynomial::set(const DArry &coef, const DArry &roots)
+{
+    _coef = coef;
+    _d = _coef.size() - 1;
+
+    _rroots = roots;
+    _nrr = _rroots.size();
+
+    _croots.clear();
+    _ncr = 0;
+
+    _use_roots = true;
+
+# ifndef NDEBUG
+    if (_d != _nrr) throw exceptions::UnmatchedLength(__FL__, _d, _nrr);
+
+    for(const auto &it: _rroots)
+    {
+        double value = evaluate(_coef, it);
+        if (std::abs(value) > 1e-12) throw exceptions::ExpectingZero(__FL__, value);
+    }
+# endif
+}
+
+// re-set both roots and coefficients
+void Polynomial::set(const DArry &coef, const CArry &roots)
+{
+    _coef = coef;
+    _d = _coef.size() - 1;
+
+    _croots = roots;
+    _ncr = _croots.size();
+
+    _rroots.clear();
+    _nrr = 0;
+
+    _use_roots = false;
+
+# ifndef NDEBUG
+    if (_d != _ncr) throw UnmatchedLength(__FL__, _d, _ncr);
+
+    for(const auto &it: _croots)
+    {
+        Cmplx value = evaluate(to_CArry(_coef), it);
+        if (std::abs(value.imag()) > 1e-12) throw FoundComplexNumber(__FL__, value);
+        if (std::abs(value.real()) > 1e-12) throw ExpectingZero(__FL__, value.real());
+    }
+# endif
+}
+
+// re-set both roots and coefficients
+void Polynomial::set(const DArry &coef,
+        const DArry &rroots, const CArry &croots)
+{
+    _coef = coef;
+    _rroots = rroots;
+    _croots = croots;
+
+    _d = _coef.size() - 1;
+    _nrr = _rroots.size();
+    _ncr = _croots.size();
+
+    _use_roots = false;
+
+# ifndef NDEBUG
+    if (_d != (_nrr + _ncr)) throw UnmatchedLength(__FL__, _d, _ncr+_nrr);
+
+    for(const auto &it: _rroots)
+    {
+        double value = evaluate(_coef, it);
+        if (std::abs(value) > 1e-12) throw ExpectingZero(__FL__, value);
+    }
+
+    for(const auto &it: _croots)
+    {
+        Cmplx value = evaluate(to_CArry(_coef), it);
+        if (std::abs(value.imag()) > 1e-12) throw FoundComplexNumber(__FL__, value);
+        if (std::abs(value.real()) > 1e-12) throw ExpectingZero(__FL__, value.real());
+    }
+# endif
+}
+
+// re-set only one coefficient
+void Polynomial::set(const int d, const double value)
+{
+    _coef[d] = value;
+    set(_coef);
+}
+
+// get a string of type
+std::string Polynomial::type() const
+{
+    switch (_type)
+    {
+        case Legendre:
+            return "Legendre";
+            break;
+        default:
+            return "General";
+            break;
+    }
+}
+
+// get a bool indicating whether to use roots or coefficients for evaluation
+bool Polynomial::use_roots() const { return _use_roots; }
+
+// get degree of polynomial
+unsigned Polynomial::degree() const { return _d; }
+
+// get number of real roots
+unsigned Polynomial::n_real_roots() const { return _nrr; }
+
+// get number of complex roots
+unsigned Polynomial::c_real_roots() const { return _ncr; }
+
+// get coefficients
+DArry Polynomial::coef() const { return _coef; }
+
+// get real roots
+DArry Polynomial::real_roots() const { return _rroots; }
+
+// get complex roots
+CArry Polynomial::cmplx_roots() const { return _croots; }
+
+// get all roots in a complex vector
+CArry Polynomial::roots() const
+{
+    CArry result(_d);
+    std::copy(_rroots.begin(), _rroots.end(), result.begin());
+    std::copy(_croots.begin(), _croots.end(), result.begin()+_nrr);
+    return result;
+}
+
+// derivative
+Polynomial Polynomial::deriv() const { return Polynomial(derivative(_coef)); }
+
+// integral
+Polynomial Polynomial::integ() const { return Polynomial(integral(_coef)); }
+
+// evaluation
+double Polynomial::operator()(const double x) const
+{
+    if (_use_roots) return evaluate_from_root(_coef.back(), _rroots, x);
+    return evaluate(_coef, x);
+}
+
+// copy assignment
+Polynomial &Polynomial::operator=(const Polynomial &p) = default;
+
+// move assigment
+Polynomial &Polynomial::operator=(Polynomial &&p) = default;
+
 } // end of namespace poly
 } // end of namespace simpoly

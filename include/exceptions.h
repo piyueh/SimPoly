@@ -9,26 +9,28 @@
 # pragma once
 
 # include <string>
+# include <complex>
 # include <exception>
 
+# define __FL__ __FILE__, __LINE__
 
 namespace simpoly
 {
 namespace exceptions
 {
-    
+
 class PolynomialErrorGeneral : public std::exception
 {
 public:
-    
-    PolynomialErrorGeneral(const std::string &file, 
+
+    PolynomialErrorGeneral(const std::string &file,
             const int &line, const std::string &m):
         msg(m+" (File: "+file+"; Line: "+std::to_string(line)+")") {};
-    
+
     virtual const char * what() const throw() {return msg.c_str();};
-    
+
 private:
-    
+
     const std::string msg;
 }; // end of class PolynomialErrorGeneral
 
@@ -36,7 +38,7 @@ private:
 class ZeroDegree : public PolynomialErrorGeneral
 {
 public:
-    
+
     ZeroDegree(const std::string &file, const int &line):
         PolynomialErrorGeneral(file, line, "Zero degree of polynomial detected.") {};
 };
@@ -45,13 +47,13 @@ public:
 class NegativeDegree : public PolynomialErrorGeneral
 {
 public:
-    
-    NegativeDegree(const std::string &file, const int &line, const int &d): 
+
+    NegativeDegree(const std::string &file, const int &line, const int &d):
         degree(d),
         PolynomialErrorGeneral(file, line,
                 "Negative degree of polynomial detected. Degree provided is: " +
                 std::to_string(d) + ".") {};
-    
+
     const int degree;
 };
 
@@ -59,7 +61,7 @@ public:
 class ZeroCoeffsLength : public PolynomialErrorGeneral
 {
 public:
-    
+
     ZeroCoeffsLength(const std::string &file, const int &line):
         PolynomialErrorGeneral(file, line,
                 "Zero-length coefficient vector/array detected.") {};
@@ -69,13 +71,13 @@ public:
 class NegativeCoeffsLength : public PolynomialErrorGeneral
 {
 public:
-    
+
     NegativeCoeffsLength(const std::string &file, const int &line, const int &l):
         len(l),
         PolynomialErrorGeneral(file, line,
                 "Negative-length coefficient vector/array detected."
                 "Length provided is: " + std::to_string(l) + ".") {};
-    
+
     const int len;
 };
 
@@ -83,15 +85,15 @@ public:
 class UnmatchedLength : public PolynomialErrorGeneral
 {
 public:
-    
-    UnmatchedLength(const std::string &file, const int &line, 
+
+    UnmatchedLength(const std::string &file, const int &line,
             const int &l1, const int &l2):
         len1(l1), len2(l2),
         PolynomialErrorGeneral(file, line,
                 "An array/arrays do not have expected lengths."
                 " Length1: " + std::to_string(l1) +
                 " Length2: " + std::to_string(l2) + ".") {};
-    
+
     const int len1, len2;
 };
 
@@ -99,25 +101,43 @@ public:
 class InfLoop : public PolynomialErrorGeneral
 {
 public:
-    
+
     InfLoop(const std::string &file, const int &line):
         PolynomialErrorGeneral(file, line, "Infinite loop.") {};
 };
 
 
-class ComplexRoot : public PolynomialErrorGeneral
+class FoundComplexNumber : public PolynomialErrorGeneral
 {
 public:
-    
-    ComplexRoot(const std::string &file, const int &line,
-            const double &r, const double &i):
-        real(r), imag(i),
-        PolynomialErrorGeneral(file, line, 
-                "This polyminal has at least one complex root. Please use "
-                "correct function. Root: (" + std::to_string(r) + ", " +
-                std::to_string(i) + ").") {};
-    
-    const double &real, &imag;
+
+    FoundComplexNumber(
+            const std::string &file, const int &line,
+            const std::complex<double> &c):
+        number(c),
+        PolynomialErrorGeneral(file, line,
+                "Found a complex number in a vector that is assumed to be "
+                "holding only real numbers. The complex number: (" +
+                std::to_string(c.real()) + ", " + std::to_string(c.imag()) +
+                ").") {};
+
+    const std::complex<double> &number;
+};
+
+
+class ExpectingZero : public PolynomialErrorGeneral
+{
+public:
+
+    ExpectingZero(
+            const std::string &file, const int &line,
+            const double &v):
+        value(v),
+        PolynomialErrorGeneral(file, line,
+                "While expecting a zero, we got a value larger than 1e-12: " +
+                std::to_string(v)) {};
+
+    const double &value;
 };
 
 } // end of namespace exceptions
