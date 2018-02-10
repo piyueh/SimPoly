@@ -219,18 +219,7 @@ void Polynomial::set(const int d, const double value)
 }
 
 // get a string of type
-std::string Polynomial::type() const
-{
-    switch (_type)
-    {
-        case Legendre:
-            return "Legendre";
-            break;
-        default:
-            return "General";
-            break;
-    }
-}
+PolyType Polynomial::type() const { return _type; }
 
 // get a bool indicating whether to use roots or coefficients for evaluation
 bool Polynomial::use_roots() const { return _use_roots; }
