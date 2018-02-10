@@ -379,7 +379,7 @@ T newton_raphson(const Arry<T> &coeffs, const T guess, const double tol=1e-13);
  *
  * \return A std::vector of all roots.
  */
-CArry aberth(const CArry &coeffs, const CArry &guess, const double tol=1e-13);
+CArry aberth(const CArry &coeffs, const CArry &guess, const double tol=1e-10);
 
 /**
  * \brief Aberth method for root finding.
@@ -393,7 +393,7 @@ CArry aberth(const CArry &coeffs, const CArry &guess, const double tol=1e-13);
  *
  * \return A std::vector of all roots.
  */
-CArry aberth(const CArry &coeffs, const DArry &guess, const double tol=1e-13);
+CArry aberth(const CArry &coeffs, const DArry &guess, const double tol=1e-10);
 
 /**
  * \brief Aberth method for root finding.
@@ -407,7 +407,7 @@ CArry aberth(const CArry &coeffs, const DArry &guess, const double tol=1e-13);
  *
  * \return A std::vector of all roots.
  */
-CArry aberth(const DArry &coeffs, const CArry &guess, const double tol=1e-13);
+CArry aberth(const DArry &coeffs, const CArry &guess, const double tol=1e-10);
 
 /**
  * \brief Aberth method for root finding.
@@ -422,7 +422,7 @@ CArry aberth(const DArry &coeffs, const CArry &guess, const double tol=1e-13);
  *
  * \return A std::vector of all roots.
  */
-CArry aberth(const DArry &coeffs, const DArry &guess, const double tol=1e-13);
+CArry aberth(const DArry &coeffs, const DArry &guess, const double tol=1e-10);
 
 /**
  * \brief Aberth method for root finding.
@@ -435,7 +435,7 @@ CArry aberth(const DArry &coeffs, const DArry &guess, const double tol=1e-13);
  *
  * \return A std::vector of all roots.
  */
-CArry aberth(const CArry &coeffs, const double tol=1e-13);
+CArry aberth(const CArry &coeffs, const double tol=1e-10);
 
 /**
  * \brief Aberth method for root finding.
@@ -449,7 +449,7 @@ CArry aberth(const CArry &coeffs, const double tol=1e-13);
  *
  * \return A std::vector of all roots.
  */
-CArry aberth(const DArry &coeffs, const double tol=1e-13);
+CArry aberth(const DArry &coeffs, const double tol=1e-10);
 
 /**
  * \brief Root-finding function that implements method from Yan & Chieng (2006)
@@ -462,7 +462,7 @@ CArry aberth(const DArry &coeffs, const double tol=1e-13);
  *
  * \return A std::vector of all roots.
  */
-CArry yan_and_chieng_2006(const CArry &coeffs, const double tol=1e-13);
+CArry yan_and_chieng_2006(const CArry &coeffs, const double tol=1e-10);
 
 /**
  * \brief Root-finding function that implements method from Yan & Chieng (2006)
@@ -474,7 +474,7 @@ CArry yan_and_chieng_2006(const CArry &coeffs, const double tol=1e-13);
  *
  * \return A std::vector of all roots.
  */
-CArry yan_and_chieng_2006(const DArry &coeffs, const double tol=1e-13);
+CArry yan_and_chieng_2006(const DArry &coeffs, const double tol=1e-10);
 
 } // end of namespace basic
 } // end of namespace simpoly
