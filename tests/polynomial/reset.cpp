@@ -1,6 +1,6 @@
 /**
- * \file tests/polynomial/initialization.cpp
- * \brief Unit tests for initialization of Polynomial class.
+ * \file tests/polynomial/reset.cpp
+ * \brief Unit tests for resetting functions of Polynomial class.
  * \author Pi-Yueh Chuang
  * \version beta
  * \date 2018-02-08
@@ -72,8 +72,27 @@ static void run(basic::DArry &c, basic::DArry &rr, basic::CArry &cr, basic::CArr
     }
 }
 
-TEST(PolynomialConstruct, Coefficient1)
+TEST(PolynomialReset, type)
 {
+    poly::Polynomial p(1.0, {1.0, -1.0}, {basic::Cmplx(2., 1.), basic::Cmplx(2., -1.)});
+
+    basic::DArry c({-5., 4., 4., -4., 1.});
+
+    basic::DArry rr({1.0, -1.0});
+
+    basic::CArry cr({basic::Cmplx(2., -1.), basic::Cmplx(2., 1.)});
+
+    basic::CArry allroots({ 1.0, -1.0, basic::Cmplx(2.0, -1.0), basic::Cmplx(2.0, 1.0) });
+
+    p.set(poly::Lagrange);
+
+    run(c, rr, cr, allroots, p, poly::Lagrange, false, 4, 2, 2);
+}
+
+TEST(PolynomialReset, Coefficient1)
+{
+    poly::Polynomial p(1.0, {1.0, -1.0}, {basic::Cmplx(2., 1.), basic::Cmplx(2., -1.)});
+
     basic::DArry c({
             -0.1195107918695455,  0.8447947406345584, -0.6030868103450979,
             -0.9766533913297424, -0.2677767116634977,  0.3804660521221173,
@@ -115,13 +134,15 @@ TEST(PolynomialConstruct, Coefficient1)
             basic::Cmplx(0.8183519974697149, 0.62842193876576),
             basic::Cmplx(1.0922685323108878, 0.) });
 
-    poly::Polynomial p(c);
+    p.set(c);
 
     run(c, rr, cr, allroots, p, poly::General, false, 15, 5, 10);
 }
 
-TEST(PolynomialConstruct, Coefficient2)
+TEST(PolynomialReset, Coefficient2)
 {
+    poly::Polynomial p(1.0, {1.0, -1.0}, {basic::Cmplx(2., 1.), basic::Cmplx(2., -1.)});
+
     basic::DArry c({
             0.0254213669105730726, -0.2534500155209851724, 0.8062095562787726655,
             -0.6357752008483941175, -1.5610318058296166477, 3.2409361412883592735,
@@ -157,13 +178,15 @@ TEST(PolynomialConstruct, Coefficient2)
             basic::Cmplx(0.8211549515211351569, 0.1913435896808370895),
             basic::Cmplx(-0.6393122975865159763, -0.3828854883388757013)});
 
-    poly::Polynomial p(c);
+    p.set(c);
 
     run(c, rr, cr, allr, p, poly::General, false, 13, 7, 6);
 }
 
-TEST(PolynomialConstruct, RealRoots)
+TEST(PolynomialReset, RealRoots)
 {
+    poly::Polynomial p(1.0, {1.0, -1.0}, {basic::Cmplx(2., 1.), basic::Cmplx(2., -1.)});
+
     basic::DArry c({
         -0.0030656367973936837, -0.0546778459167431147, -0.1104907299430930162,
         0.9134673653237410651, 0.232604797603839647 , -2.2719417419792904411,
@@ -180,13 +203,15 @@ TEST(PolynomialConstruct, RealRoots)
         -0.943023789745914609 , 0.3940559055598014115, -0.0732864366680110457,
         0.7280452934153942568});
 
-    poly::Polynomial p(1.5, rr);
+    p.set(1.5, rr);
 
     run(c, rr, cr, allr, p, poly::General, true, 7, 7, 0);
 }
 
-TEST(PolynomialConstruct, CmplxRoots)
+TEST(PolynomialReset, CmplxRoots)
 {
+    poly::Polynomial p(1.0, {1.0, -1.0}, {basic::Cmplx(2., 1.), basic::Cmplx(2., -1.)});
+
     basic::DArry c({
             0.0294157315584267429, 0.1828545566550552615, 0.7752484826061304402,
             2.1749217360894204099, 4.7522887221290321946, 7.8363735137657037910,
@@ -219,13 +244,15 @@ TEST(PolynomialConstruct, CmplxRoots)
             basic::Cmplx(-0.2514232122885062815, -0.5350583485005697693),
             basic::Cmplx(-0.5394655944693540484, -0.5272551705386470111)});
 
-    poly::Polynomial p(1.0, cr);
+    p.set(1.0, cr);
 
     run(c, rr, cr, allr, p, poly::General, false, 10, 0, 10);
 }
 
-TEST(PolynomialConstruct, MixedRoots)
+TEST(PolynomialReset, MixedRoots)
 {
+    poly::Polynomial p(1.0, {1.0, -1.0}, {basic::Cmplx(2., 1.), basic::Cmplx(2., -1.)});
+
     basic::DArry c({
             4.8761816514376562538e-04, -3.0680255180199938331e-02, -1.9399430784745028133e-01,
             2.2327406840241159625e-01, 8.5211236507700105491e-01, -7.1470499725845870742e-01,
@@ -257,13 +284,15 @@ TEST(PolynomialConstruct, MixedRoots)
             basic::Cmplx(0.8863017933854371311, -0.952203188776464815),
             basic::Cmplx(-0.6348002594683372912, -0.5028578564320600464)});
 
-    poly::Polynomial p(1.0, rr, cr);
+    p.set(1.0, rr, cr);
 
     run(c, rr, cr, allr, p, poly::General, false, 11, 5, 6);
 }
 
-TEST(PolynomialConstruct, CoefficientRealRoots)
+TEST(PolynomialReset, CoefficientRealRoots)
 {
+    poly::Polynomial p(1.0, {1.0, -1.0}, {basic::Cmplx(2., 1.), basic::Cmplx(2., -1.)});
+
     basic::DArry c({
         8.8116801897574424103e-08,  -1.5755432076005173523e-05,
         3.2755888134778607694e-04,   1.0390721688220840024e-02,
@@ -291,13 +320,15 @@ TEST(PolynomialConstruct, CoefficientRealRoots)
         -0.4764932045263101656,  0.5856198013651621181,
         0.7879411424312969814,  0.4556398123473843764});
 
-    poly::Polynomial p(c, rr);
+    p.set(c, rr);
 
     run(c, rr, cr, allr, p, poly::General, true, 12, 12, 0);
 }
 
-TEST(PolynomialConstruct, CoefficientCmplxRoots)
+TEST(PolynomialReset, CoefficientCmplxRoots)
 {
+    poly::Polynomial p(1.0, {1.0, -1.0}, {basic::Cmplx(2., 1.), basic::Cmplx(2., -1.)});
+
     basic::DArry c({
             0.8518872382911975016,  1.1637936035152987024, 2.5451161666633632663,
             2.5567555527462921816, 3.3173821473742890475,  2.1100889511742426663,
@@ -325,13 +356,15 @@ TEST(PolynomialConstruct, CoefficientCmplxRoots)
             basic::Cmplx(-0.6149591360259734074, 0.7153509672829487798),
             basic::Cmplx(0.0424410161931678687, -0.8059405380525002105)});
 
-    poly::Polynomial p(c, cr);
+    p.set(c, cr);
 
     run(c, rr, cr, allr, p, poly::General, false, 8, 0, 8);
 }
 
-TEST(PolynomialConstruct, CoefficientMixedRoots)
+TEST(PolynomialReset, CoefficientMixedRoots)
 {
+    poly::Polynomial p(1.0, {1.0, -1.0}, {basic::Cmplx(2., 1.), basic::Cmplx(2., -1.)});
+
     basic::DArry c({
             0.0254213669105730726, -0.2534500155209851724, 0.8062095562787726655,
             -0.6357752008483941175, -1.5610318058296166477, 3.2409361412883592735,
@@ -367,13 +400,40 @@ TEST(PolynomialConstruct, CoefficientMixedRoots)
             basic::Cmplx(0.8211549515211351569, 0.1913435896808370895),
             basic::Cmplx(-0.6393122975865159763, -0.3828854883388757013)});
 
-    poly::Polynomial p(c, rr, cr);
+    p.set(c, rr, cr);
 
     run(c, rr, cr, allr, p, poly::General, false, 13, 7, 6);
 }
 
-TEST(PolynomialConstruct, MoveConstruction)
+TEST(PolynomialReset, SingleCoefficient)
 {
+    poly::Polynomial p(1.0, {1.0, -1.0}, {basic::Cmplx(2., 1.), basic::Cmplx(2., -1.)});
+
+    p.set(0, 3.0);
+
+    basic::DArry c({3., 4., 4., -4., 1.});
+
+    basic::DArry rr({});
+
+    basic::CArry cr({
+            basic::Cmplx(-0.3995152719948320552, 0.4940747781433529884),
+            basic::Cmplx(-0.3995152719948316111, -0.4940747781433524888),
+            basic::Cmplx(2.3995152719948316111, -1.2935130871762103855),
+            basic::Cmplx(2.3995152719948329434, 1.2935130871762121618)});
+
+    basic::CArry allroots({
+            basic::Cmplx(-0.3995152719948320552, 0.4940747781433529884),
+            basic::Cmplx(-0.3995152719948316111, -0.4940747781433524888),
+            basic::Cmplx(2.3995152719948316111, -1.2935130871762103855),
+            basic::Cmplx(2.3995152719948329434, 1.2935130871762121618)});
+
+    run(c, rr, cr, allroots, p, poly::General, false, 4, 0, 4);
+}
+
+TEST(PolynomialAssignment, MoveAssignment)
+{
+    poly::Polynomial p(1.0, {1.0, -1.0}, {basic::Cmplx(2., 1.), basic::Cmplx(2., -1.)});
+
     basic::DArry c({
             0.0254213669105730726, -0.2534500155209851724, 0.8062095562787726655,
             -0.6357752008483941175, -1.5610318058296166477, 3.2409361412883592735,
@@ -409,12 +469,12 @@ TEST(PolynomialConstruct, MoveConstruction)
             basic::Cmplx(0.8211549515211351569, 0.1913435896808370895),
             basic::Cmplx(-0.6393122975865159763, -0.3828854883388757013)});
 
-    poly::Polynomial p(std::move(poly::Polynomial(c)));
+    p = std::move(poly::Polynomial(c));
 
     run(c, rr, cr, allr, p, poly::General, false, 13, 7, 6);
 }
 
-TEST(PolynomialConstruct, CopyConstruction)
+TEST(PolynomialAssignment, CopyAssignment)
 {
     basic::DArry c({
             0.0254213669105730726, -0.2534500155209851724, 0.8062095562787726655,
@@ -452,7 +512,7 @@ TEST(PolynomialConstruct, CopyConstruction)
             basic::Cmplx(-0.6393122975865159763, -0.3828854883388757013)});
 
     poly::Polynomial p(c);
-    poly::Polynomial pp(p);
+    poly::Polynomial pp = p;
 
     run(c, rr, cr, allr, pp, poly::General, false, 13, 7, 6);
 }
