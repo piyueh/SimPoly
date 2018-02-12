@@ -27,6 +27,7 @@ ADD_EXECUTABLE(polynomial
     ${TEST_SRC}/polynomial/initialization.cpp
     ${TEST_SRC}/polynomial/reset.cpp
     ${TEST_SRC}/polynomial/evaluation.cpp
+    ${TEST_SRC}/polynomial/calculus.cpp
     )
 
 TARGET_INCLUDE_DIRECTORIES(polynomial PRIVATE ${GTEST_INCLUDE_DIRS})
