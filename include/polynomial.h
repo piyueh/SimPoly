@@ -316,6 +316,18 @@ public:
     double operator()(const double x) const;
 
     /**
+     * \brief Overloaded operator().
+     *
+     * With this operator, to evaluate the value of this polynomial at x, one
+     * can use f(x) to get the value. This version accepts an array of x.
+     *
+     * \param x [in] The locations to evaluate.
+     *
+     * \return The values.
+     */
+    basic::DArry operator()(const basic::DArry &x) const;
+
+    /**
      * \brief Copy assignment.
      *
      * \param p [in] Another Polynomial instance.
