@@ -20,6 +20,38 @@ namespace simpoly
 namespace basic
 {
 
+CArry low_degree_roots0(const CArry &P) { return CArry(0); }
+
+CArry low_degree_roots1(const CArry &P) { return {-P[0]/P[1]}; }
+
+CArry low_degree_roots2(const CArry &P)
+{
+    Cmplx twoA = 2.0 * P[2];
+    Cmplx sqFourAC = std::sqrt(4.0 * P[2] * P[0]);
+    return {(-P[1]+sqFourAC)/twoA, (-P[1]-sqFourAC)/twoA};
+}
+
+CArry use_low_degree_formula(const CArry &P)
+{
+    switch (P.size())
+    {
+        case 1: // degree 0 (i.e., constant)
+            return low_degree_roots0(P);
+            break;
+        case 2: // degree 1 (i.e., linear)
+            return low_degree_roots1(P);
+            break;
+        case 3: // degree 2 (i.e., quadratic)
+            return low_degree_roots2(P);
+            break;
+        case 4: // degree 2 (i.e., cubic)
+        case 5: // degree 2 (i.e., quartic)
+       default:
+           throw exceptions::PolynomialErrorGeneral(
+                   __FL__, "Not implemented yet.");
+   }
+}
+
 template <typename T>
 T newton_raphson(const Arry<T> &coeffs, const T guess, const double tol)
 {
@@ -64,8 +96,8 @@ CArry aberth(const CArry &coeffs, const CArry &guess, const double tol)
     // alias to the length of provided coefficient array
     const auto &len = coeffs.size();
 
-    // if degree is 0, no root exists; return a zero-length array
-    if (len == 1) return CArry(0);
+    // use exact solution for low-degree polynomials
+    if (len < 4) return use_low_degree_formula(coeffs);
 
     // initialize initial guess through copying
     CArry rts(guess);
@@ -119,8 +151,10 @@ CArry aberth(const CArry &coeffs, const CArry &guess, const double tol)
 
 CArry aberth(const CArry &coeffs, const DArry &guess, const double tol)
 {
-    // if degree is 0, no root exists; return a zero-length array
-    if (coeffs.size() == 1) return CArry(0);
+    CHECK_COEFS(coeffs, 1e-12);
+
+    // use exact solution for low-degree polynomials
+    if (coeffs.size() < 4) return use_low_degree_formula(coeffs);
 
     // make a copy of guess with complex type, and perturbation in imag
     CArry G = to_CArry(guess);
@@ -134,8 +168,10 @@ CArry aberth(const CArry &coeffs, const DArry &guess, const double tol)
 
 CArry aberth(const DArry &coeffs, const CArry &guess, const double tol)
 {
-    // if degree is 0, no root exists; return a zero-length array
-    if (coeffs.size() == 1) return CArry(0);
+    CHECK_COEFS(coeffs, 1e-12);
+
+    // use exact solution for low-degree polynomials
+    if (coeffs.size() < 4) return use_low_degree_formula(to_CArry(coeffs));
 
     return aberth(to_CArry(coeffs), guess, tol);
 }
@@ -143,8 +179,10 @@ CArry aberth(const DArry &coeffs, const CArry &guess, const double tol)
 
 CArry aberth(const DArry &coeffs, const DArry &guess, const double tol)
 {
-    // if degree is 0, no root exists; return a zero-length array
-    if (coeffs.size() == 1) return CArry(0);
+    CHECK_COEFS(coeffs, 1e-12);
+
+    // use exact solution for low-degree polynomials
+    if (coeffs.size() < 4) return use_low_degree_formula(to_CArry(coeffs));
 
     // make a copy of guess with complex type
     CArry G = to_CArry(guess);
@@ -160,8 +198,8 @@ CArry aberth(const CArry &coeffs, const double tol)
 {
     CHECK_COEFS(coeffs, 1e-12);
 
-    // if degree is 0, no root exists; return a zero-length array
-    if (coeffs.size() == 1) return CArry(0);
+    // use exact solution for low-degree polynomials
+    if (coeffs.size() < 4) return use_low_degree_formula(coeffs);
 
     // initialize initial guess through copying
     CArry guess(coeffs.size()-1);
@@ -178,8 +216,8 @@ CArry aberth(const DArry &coeffs, const double tol)
 {
     CHECK_COEFS(coeffs, 1e-12);
 
-    // if degree is 0, no root exists; return a zero-length array
-    if (coeffs.size() == 1) return CArry(0);
+    // use exact solution for low-degree polynomials
+    if (coeffs.size() < 4) return use_low_degree_formula(to_CArry(coeffs));
 
     // initialize initial guess through copying
     CArry guess(coeffs.size()-1);
@@ -195,6 +233,9 @@ CArry aberth(const DArry &coeffs, const double tol)
 CArry yan_and_chieng_2006(const CArry &coeffs, const double tol)
 {
     CHECK_COEFS(coeffs, 1e-12);
+
+    // use exact solution for low-degree polynomials
+    if (coeffs.size() < 4) return use_low_degree_formula(coeffs);
 
     CArry     drv = derivative(coeffs); // direvative
     CArry     agcd = GCD(coeffs, drv); // approximated GCD
@@ -254,6 +295,11 @@ CArry yan_and_chieng_2006(const CArry &coeffs, const double tol)
 
 CArry yan_and_chieng_2006(const DArry &coeffs, const double tol)
 {
+    CHECK_COEFS(coeffs, 1e-12);
+
+    // use exact solution for low-degree polynomials
+    if (coeffs.size() < 4) return use_low_degree_formula(to_CArry(coeffs));
+
     CArry C = to_CArry(coeffs);
     return yan_and_chieng_2006(C, tol);
 }
