@@ -301,9 +301,6 @@ template CArry to_coefficients(const Cmplx &l, const Cmplx* const &rts, const in
 template DArry to_coefficients(const double &l, const DArry &rts);
 template CArry to_coefficients(const Cmplx &l, const CArry &rts);
 
-} // end of namespace basic
-} // end of namespace simpoly
-
 
 // operator << for DArry
 std::ostream &operator<<(std::ostream &os, const simpoly::basic::DArry &v)
@@ -315,7 +312,6 @@ std::ostream &operator<<(std::ostream &os, const simpoly::basic::DArry &v)
     return os;
 }
 
-
 // operator << for CArry
 std::ostream &operator<<(std::ostream &os, const simpoly::basic::CArry &v)
 {
@@ -325,3 +321,6 @@ std::ostream &operator<<(std::ostream &os, const simpoly::basic::CArry &v)
     os << v.back();
     return os;
 }
+
+} // end of namespace basic
+} // end of namespace simpoly

@@ -46,7 +46,7 @@ public:
      *
      * \param coef [in] Coefficients.
      */
-    Polynomial(const basic::DArry &coef);
+    explicit Polynomial(const basic::DArry &coef);
 
     /**
      * \brief Constructor using roots.
@@ -473,7 +473,7 @@ public:
      *
      * \return A bool.
      */
-    bool operator==(const Polynomial &rhs);
+    bool operator==(const Polynomial &rhs) const;
 
     /**
      * \brief Comparison operator !=.
@@ -482,7 +482,7 @@ public:
      *
      * \return A bool.
      */
-    bool operator!=(const Polynomial &rhs);
+    bool operator!=(const Polynomial &rhs) const;
 
     friend Polynomial operator+(Polynomial lhs, const Polynomial &rhs);
     friend Polynomial operator+(Polynomial lhs, const double &rhs);
@@ -495,6 +495,7 @@ public:
     friend Polynomial operator*(const double &lhs, Polynomial rhs);
     friend Polynomial operator/(Polynomial lhs, const double &rhs);
     friend Polynomial operator%(Polynomial lhs, const Polynomial &rhs);
+    friend std::ostream & operator<<(std::ostream &os, const Polynomial &rhs);
     friend Polynomial divide(const Polynomial &p1,
             const Polynomial &p2, Polynomial &R);
     friend Polynomial quotient(const Polynomial &p1, const Polynomial &p2);
@@ -536,6 +537,7 @@ Polynomial operator*(Polynomial lhs, const double &rhs);
 Polynomial operator*(const double &lhs, Polynomial rhs);
 Polynomial operator/(Polynomial lhs, const double &rhs);
 Polynomial operator%(Polynomial lhs, const Polynomial &rhs);
+std::ostream & operator<<(std::ostream &os, const Polynomial &rhs);
 
 } // end of namespace poly
 } // end of namespace simpoly

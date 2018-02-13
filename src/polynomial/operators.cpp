@@ -114,18 +114,19 @@ Polynomial & Polynomial::operator/=(const double &rhs)
 }
 
 // ==
-bool Polynomial::operator==(const Polynomial &rhs)
+bool Polynomial::operator==(const Polynomial &rhs) const
 {
     if (_d != rhs._d) return false;
 
     for(unsigned i=0; i<_coef.size(); ++i)
-        if (std::abs(_coef[i] - rhs._coef[i]) > 1e-12) return false;
+        if ((std::abs(_coef[i]-rhs._coef[i])/std::abs(_coef[i])) > 1e-12)
+            return false;
 
     return true;
 }
 
 // !=
-bool Polynomial::operator!=(const Polynomial &rhs)
+bool Polynomial::operator!=(const Polynomial &rhs) const
 {
     return ! (this->operator==(rhs));
 }
@@ -173,6 +174,13 @@ Polynomial operator/(Polynomial lhs, const double &rhs)
 // %
 Polynomial operator%(Polynomial lhs, const Polynomial &rhs)
 { return std::move(remainder(lhs, rhs)); }
+
+// <<
+std::ostream & operator<<(std::ostream &os, const Polynomial &rhs)
+{
+    basic::operator<<(os, rhs._coef);
+    return os;
+}
 
 // poly::divide
 Polynomial divide(const Polynomial &p1, const Polynomial &p2, Polynomial &R)

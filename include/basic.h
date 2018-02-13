@@ -485,9 +485,6 @@ CArry yan_and_chieng_2006(const CArry &coeffs, const double tol=1e-10);
  */
 CArry yan_and_chieng_2006(const DArry &coeffs, const double tol=1e-10);
 
-} // end of namespace basic
-} // end of namespace simpoly
-
 
 /**
  * \brief Overloaded output stream for CArry.
@@ -508,3 +505,6 @@ std::ostream &operator<<(std::ostream &os, const simpoly::basic::CArry &v);
  * \return The output stream.
  */
 std::ostream &operator<<(std::ostream &os, const simpoly::basic::DArry &v);
+
+} // end of namespace basic
+} // end of namespace simpoly
