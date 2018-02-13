@@ -325,7 +325,7 @@ public:
      *
      * This is a version of division that returns a quotient and a remainder.
      * For to only get quotient or remainder, please use `quotient()` and
-     * `remainder()`, or their equivelant operators `/` and `%`.
+     * `remainder()`.
      *
      * \param divisor [in] Divisor.
      * \param R [out] Remainder.
@@ -400,6 +400,106 @@ public:
      */
     Polynomial & operator=(Polynomial &&p);
 
+    /**
+     * \brief Compound operator +=.
+     *
+     * \param rhs [in] Right hand side Polynomial.
+     *
+     * \return This polynomial with updated content.
+     */
+    Polynomial & operator+=(const Polynomial &rhs);
+
+    /**
+     * \brief Compound operator +=.
+     *
+     * \param rhs [in] Right hand side double.
+     *
+     * \return This polynomial with updated content.
+     */
+    Polynomial & operator+=(const double &rhs);
+
+    /**
+     * \brief Compound operator -=.
+     *
+     * \param rhs [in] Right hand side Polynomial.
+     *
+     * \return This polynomial with updated content.
+     */
+    Polynomial & operator-=(const Polynomial &rhs);
+
+    /**
+     * \brief Compound operator -=.
+     *
+     * \param rhs [in] Right hand side double.
+     *
+     * \return This polynomial with updated content.
+     */
+    Polynomial & operator-=(const double &rhs);
+
+    /**
+     * \brief Compound operator *=.
+     *
+     * \param rhs [in] Right hand side Polynomial.
+     *
+     * \return This polynomial with updated content.
+     */
+    Polynomial & operator*=(const Polynomial &rhs);
+
+    /**
+     * \brief Compound operator *=.
+     *
+     * \param rhs [in] Right hand side double.
+     *
+     * \return This polynomial with updated content.
+     */
+    Polynomial & operator*=(const double &rhs);
+
+    /**
+     * \brief Compound operator /=.
+     *
+     * Only operations with numbers are allowed. For division between
+     * polynomials, please use member function `divide`.
+     *
+     * \param rhs [in] Right hand side double.
+     *
+     * \return This polynomial with updated content.
+     */
+    Polynomial & operator/=(const double &rhs);
+
+    /**
+     * \brief Comparison operator ==.
+     *
+     * \param rhs [in] Right hand side Polynomial.
+     *
+     * \return A bool.
+     */
+    bool operator==(const Polynomial &rhs);
+
+    /**
+     * \brief Comparison operator !=.
+     *
+     * \param rhs [in] Right hand side Polynomial.
+     *
+     * \return A bool.
+     */
+    bool operator!=(const Polynomial &rhs);
+
+    friend Polynomial operator+(Polynomial lhs, const Polynomial &rhs);
+    friend Polynomial operator+(Polynomial lhs, const double &rhs);
+    friend Polynomial operator+(const double &lhs, Polynomial rhs);
+    friend Polynomial operator-(Polynomial lhs, const Polynomial &rhs);
+    friend Polynomial operator-(Polynomial lhs, const double &rhs);
+    friend Polynomial operator-(const double &lhs, Polynomial rhs);
+    friend Polynomial operator*(Polynomial lhs, const Polynomial &rhs);
+    friend Polynomial operator*(Polynomial lhs, const double &rhs);
+    friend Polynomial operator*(const double &lhs, Polynomial rhs);
+    friend Polynomial operator/(Polynomial lhs, const double &rhs);
+    friend Polynomial operator%(Polynomial lhs, const Polynomial &rhs);
+    friend Polynomial divide(const Polynomial &p1,
+            const Polynomial &p2, Polynomial &R);
+    friend Polynomial quotient(const Polynomial &p1, const Polynomial &p2);
+    friend Polynomial remainder(const Polynomial &p1, const Polynomial &p2);
+
 protected:
 
     PolyType _type; ///< the type of this polynomial
@@ -421,6 +521,21 @@ protected:
      */
     void _get_roots(const double tol=1e-12) const;
 };
+
+Polynomial divide(const Polynomial &p1, const Polynomial &p2, Polynomial &R);
+Polynomial quotient(const Polynomial &p1, const Polynomial &p2);
+Polynomial remainder(const Polynomial &p1, const Polynomial &p2);
+Polynomial operator+(Polynomial lhs, const Polynomial &rhs);
+Polynomial operator+(Polynomial lhs, const double &rhs);
+Polynomial operator+(const double &lhs, Polynomial rhs);
+Polynomial operator-(Polynomial lhs, const Polynomial &rhs);
+Polynomial operator-(Polynomial lhs, const double &rhs);
+Polynomial operator-(const double &lhs, Polynomial rhs);
+Polynomial operator*(Polynomial lhs, const Polynomial &rhs);
+Polynomial operator*(Polynomial lhs, const double &rhs);
+Polynomial operator*(const double &lhs, Polynomial rhs);
+Polynomial operator/(Polynomial lhs, const double &rhs);
+Polynomial operator%(Polynomial lhs, const Polynomial &rhs);
 
 } // end of namespace poly
 } // end of namespace simpoly

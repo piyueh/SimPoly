@@ -12,6 +12,7 @@ SET(SOURCE
     ${SRC}/basic/calculus.cpp
     ${SRC}/basic/root_findings.cpp
     ${SRC}/polynomial/polynomial.cpp
+    ${SRC}/polynomial/operators.cpp
     )
 
 # SimPoly library

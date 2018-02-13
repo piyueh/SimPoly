@@ -297,32 +297,5 @@ Polynomial Polynomial::deriv() const { return Polynomial(derivative(_coef)); }
 // integral
 Polynomial Polynomial::integ() const { return Polynomial(integral(_coef)); }
 
-// evaluation
-double Polynomial::operator()(const double x) const
-{
-    if (_use_roots) return evaluate_from_root(_coef.back(), _rroots, x);
-    return evaluate(_coef, x);
-}
-
-// evaluation
-DArry Polynomial::operator()(const DArry &x) const
-{
-    DArry result(x.size());
-    if (_use_roots)
-        for(unsigned i=0; i<x.size(); ++i)
-            result[i] = evaluate_from_root(_coef.back(), _rroots, x[i]);
-
-    for(unsigned i=0; i<x.size(); ++i)
-        result[i] = evaluate(_coef, x[i]);
-
-    return result;
-}
-
-// copy assignment
-Polynomial &Polynomial::operator=(const Polynomial &p) = default;
-
-// move assigment
-Polynomial &Polynomial::operator=(Polynomial &&p) = default;
-
 } // end of namespace poly
 } // end of namespace simpoly
