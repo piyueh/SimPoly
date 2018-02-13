@@ -45,9 +45,8 @@ public:
      * \brief Constructor using coefficients.
      *
      * \param coef [in] Coefficients.
-     * \param type [in] Type of the polynomial (default: General).
      */
-    Polynomial(const basic::DArry &coef, const PolyType &type=General);
+    Polynomial(const basic::DArry &coef);
 
     /**
      * \brief Constructor using roots.
@@ -56,10 +55,8 @@ public:
      *
      * \param l [in] The coefficient of the highest degree.
      * \param roots [in] Roots.
-     * \param type [in] Type of the polynomial (default: General).
      */
-    Polynomial(const double l, const basic::DArry &roots,
-            const PolyType &type=General);
+    Polynomial(const double l, const basic::DArry &roots);
 
     /**
      * \brief Constructor using roots.
@@ -68,10 +65,8 @@ public:
      *
      * \param l [in] The coefficient of the highest degree.
      * \param roots [in] Roots.
-     * \param type [in] Type of the polynomial (default: General).
      */
-    Polynomial(const double l, const basic::CArry &roots,
-            const PolyType &type=General);
+    Polynomial(const double l, const basic::CArry &roots);
 
     /**
      * \brief Constructor using roots.
@@ -81,10 +76,8 @@ public:
      * \param l [in] The coefficient of the highest degree.
      * \param rroots [in] Real roots.
      * \param croots [in] Complex roots.
-     * \param type [in] Type of the polynomial (default: General).
      */
-    Polynomial(const double l, const basic::DArry &rroots,
-            const basic::CArry &croots, const PolyType &type=General);
+    Polynomial(const double l, const basic::DArry &rroots, const basic::CArry &croots);
 
     /**
      * \brief Constructor using coef and roots.
@@ -94,10 +87,8 @@ public:
      *
      * \param coef [in] Coefficients.
      * \param roots [in] Roots.
-     * \param type [in] Type of the polynomial (default: General).
      */
-    Polynomial(const basic::DArry &coef, const basic::DArry &roots,
-            const PolyType &type=General);
+    Polynomial(const basic::DArry &coef, const basic::DArry &roots);
 
     /**
      * \brief Constructor using coef and roots.
@@ -108,10 +99,8 @@ public:
      *
      * \param coef [in] Coefficients.
      * \param roots [in] Roots.
-     * \param type [in] Type of the polynomial (default: General).
      */
-    Polynomial(const basic::DArry &coef, const basic::CArry &roots,
-            const PolyType &type=General);
+    Polynomial(const basic::DArry &coef, const basic::CArry &roots);
 
     /**
      * \brief Constructor using coef and roots.
@@ -123,10 +112,9 @@ public:
      * \param coef [in] Coefficients.
      * \param rroots [in] Real roots.
      * \param croots [in] Complex roots.
-     * \param type [in] Type of the polynomial (default: General).
      */
-    Polynomial(const basic::DArry &coef, const basic::DArry &rroots,
-            const basic::CArry &croots, const PolyType &type=General);
+    Polynomial(const basic::DArry &coef,
+            const basic::DArry &rroots, const basic::CArry &croots);
 
     /** \brief Destructor. */
     virtual ~Polynomial() = default;
@@ -144,9 +132,8 @@ public:
      * \brief Reset coefficients and roots using coefficients.
      *
      * \param coef [in] Coefficients.
-     * \param tol [in] Tolerance to discard imaginary parts (default: 1e-8).
      */
-    void set(const basic::DArry &coef, const double &tol=1e-8);
+    void set(const basic::DArry &coef);
 
     /**
      * \brief Reset coefficients and roots using coefficients.
@@ -247,20 +234,6 @@ public:
     unsigned degree() const;
 
     /**
-     * \brief Get the number of real roots.
-     *
-     * \return The number of real roots.
-     */
-    unsigned n_real_roots() const;
-
-    /**
-     * \brief Get the number of complex roots.
-     *
-     * \return The number of complex roots.
-     */
-    unsigned n_cmplx_roots() const;
-
-    /**
      * \brief Get a vector of coefficients.
      *
      * \return Coefficients vector.
@@ -268,26 +241,70 @@ public:
     basic::DArry coef() const;
 
     /**
+     * \brief Get the number of real roots.
+     *
+     * If roots has not been calculated by this instance, then it will claculate
+     * roots before returning the number of real roots.
+     *
+     * \param tol [in] Tolerance mimicing zero used by underlying root-finding
+     *        algorithms (default: 1e-12).
+     *
+     * \return The number of real roots.
+     */
+    unsigned n_real_roots(const double tol=1e-12) const;
+
+    /**
+     * \brief Get the number of complex roots.
+     *
+     * If roots has not been calculated by this instance, then it will claculate
+     * roots before returning the number of complex roots.
+     *
+     * \param tol [in] Tolerance mimicing zero used by underlying root-finding
+     *        algorithms (default: 1e-12).
+     *
+     * \return The number of complex roots.
+     */
+    unsigned n_cmplx_roots(const double tol=1e-12) const;
+
+    /**
      * \brief Get a vector holding real roots.
+     *
+     * If roots has not been calculated by this instance, then it will claculate
+     * roots before returning an array of real roots.
+     *
+     * \param tol [in] Tolerance mimicing zero used by underlying root-finding
+     *        algorithms (default: 1e-12).
      *
      * \return Real roots.
      */
-    basic::DArry real_roots() const;
+    basic::DArry real_roots(const double tol=1e-12) const;
 
     /**
      * \brief Get a vector holding complex roots.
      *
+     * If roots has not been calculated by this instance, then it will claculate
+     * roots before returning an array of complex roots.
+     *
+     * \param tol [in] Tolerance mimicing zero used by underlying root-finding
+     *        algorithms (default: 1e-12).
+     *
      * \return complex roots.
      */
-    basic::CArry cmplx_roots() const;
+    basic::CArry cmplx_roots(const double tol=1e-12) const;
 
     /**
      * \brief Get a complex vector holding all roots, regradless they are real
      *        or complex numbers.
      *
+     * If roots has not been calculated by this instance, then it will claculate
+     * roots before returning a complex array of all roots.
+     *
+     * \param tol [in] Tolerance mimicing zero used by underlying root-finding
+     *        algorithms (default: 1e-12).
+     *
      * \return All roots.
      */
-    basic::CArry roots() const;
+    basic::CArry roots(const double tol=1e-12) const;
 
     /**
      * \brief Get the derivative of this Polynomial.
@@ -302,6 +319,44 @@ public:
      * \return The integral.
      */
     Polynomial integ() const;
+
+    /**
+     * \brief Divide by a polynomial.
+     *
+     * This is a version of division that returns a quotient and a remainder.
+     * For to only get quotient or remainder, please use `quotient()` and
+     * `remainder()`, or their equivelant operators `/` and `%`.
+     *
+     * \param divisor [in] Divisor.
+     * \param R [out] Remainder.
+     *
+     * \return Quitient.
+     */
+    Polynomial divide(const Polynomial &divisor, Polynomial &R);
+
+    /**
+     * \brief Divide by a polynomial and return only quotient.
+     *
+     * Return only the quotient. Any remainder will be discarded. This is equal
+     * to operator `/`.
+     *
+     * \param divisor [in] Divisor.
+     *
+     * \return Quotient.
+     */
+    Polynomial quotient(const Polynomial &divisor);
+
+    /**
+     * \brief Divide by a polynomial and return only remainder.
+     *
+     * Return only the quotient. The quotient will be discarded. This is equal
+     * to operator `%`.
+     *
+     * \param divisor [in] Divisor.
+     *
+     * \return Remainder.
+     */
+    Polynomial remainder(const Polynomial &divisor);
 
     /**
      * \brief Overloaded operator().
@@ -334,7 +389,7 @@ public:
      *
      * \return This polynomial with updated content.
      */
-    Polynomial &operator=(const Polynomial &p);
+    Polynomial & operator=(const Polynomial &p);
 
     /**
      * \brief Move assignment.
@@ -343,11 +398,12 @@ public:
      *
      * \return This polynomial with updated content.
      */
-    Polynomial &operator=(Polynomial &&p);
+    Polynomial & operator=(Polynomial &&p);
 
 protected:
 
     PolyType _type; ///< the type of this polynomial
+    bool _have_roots; ///< indicate if we already have roots in this instance
     bool _use_roots; ///< indicate if using roots to evaluate values
 
     unsigned _d; ///< degree of this polynomial
@@ -357,6 +413,13 @@ protected:
     basic::DArry _coef; ///< coefficient array
     basic::DArry _rroots; ///< array holding real roots
     basic::CArry _croots; ///< array holding complex roots
+
+    /**
+     * \brief Underlying private function to get roots.
+     *
+     * \param tol [in] Tolerance mimics zero (default: 1e-12).
+     */
+    void _get_roots(const double tol=1e-12) const;
 };
 
 } // end of namespace poly
