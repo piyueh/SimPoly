@@ -23,12 +23,10 @@ namespace basic
 template <typename T>
 Arry<T> derivative(const Arry<T> &coeffs)
 {
+    CHECK_COEFS(coeffs, 1e-12);
+
     // alias to the length of provided coefficient array
     const auto &len = coeffs.size();
-
-# ifndef NDEBUG
-    if (len == 0) throw exceptions::ZeroCoeffsLength(__FILE__, __LINE__);
-# endif
 
     if (len == 1) return Arry<T>(1, 0.0);
 
@@ -39,8 +37,7 @@ Arry<T> derivative(const Arry<T> &coeffs)
     const auto &bg = result.data() - 1;
 
     // calculate correct values in-place
-    std::for_each(result.begin(), result.end(),
-            [&bg](T &x){x *= T(&x - bg);});
+    std::for_each(result.begin(), result.end(), [&bg](T &x){x *= T(&x - bg);});
 
     return result;
 }
@@ -49,12 +46,10 @@ Arry<T> derivative(const Arry<T> &coeffs)
 template <typename T>
 Arry<T> integral(const Arry<T> &coeffs)
 {
+    CHECK_COEFS(coeffs, 1e-12);
+
     // alias to the length of provided coefficient array
     const auto &len = coeffs.size();
-
-# ifndef NDEBUG
-    if (len == 0) throw exceptions::ZeroCoeffsLength(__FILE__, __LINE__);
-# endif
 
     // initialize result with len+1 zeros
     Arry<T> result(len+1, 0.0);

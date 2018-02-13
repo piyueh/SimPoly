@@ -90,6 +90,15 @@ Arry<T> to_coefficients(const T &l, const T* const &rts, const int len);
 template <typename T>
 Arry<T> to_coefficients(const T &l, const Arry<T> &rts);
 
+/**
+ * \brief A helper function to eliminate zero leading coefficients.
+ *
+ * \tparam T Base type of entries in the array of coefficients.
+ * \param p [in] An array representing polynomial coefficients.
+ */
+template <typename T>
+void trim_leading_zeros(Arry<T> &p, const double tol);
+
 
 /**
  * \brief Addition of two polynomials defined by std::vector.

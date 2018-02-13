@@ -134,7 +134,7 @@ TEST(PolynomialAdd, FirstOneLonger)
     int len = dist1(generator);
     basic::DArry p1(len), result(len);
 
-    std::uniform_int_distribution<int> dist2(0, len-1);
+    std::uniform_int_distribution<int> dist2(1, (len==1)?1:len-1);
     basic::DArry p2(dist2(generator));
 
     std::uniform_real_distribution<double> rdouble(-5.0, 5.0);
@@ -153,7 +153,7 @@ TEST(PolynomialAdd, SecondOneLonger)
     int len = dist1(generator);
     basic::DArry p1(len), result(len);
 
-    std::uniform_int_distribution<int> dist2(0, len-1);
+    std::uniform_int_distribution<int> dist2(1, (len==1)?1:len-1);
     basic::DArry p2(dist2(generator));
 
     std::uniform_real_distribution<double> rdouble(-5.0, 5.0);

@@ -23,6 +23,8 @@ namespace basic
 template <typename T>
 T newton_raphson(const Arry<T> &coeffs, const T guess, const double tol)
 {
+    CHECK_COEFS(coeffs, 1e-12);
+
     T ans = guess;
     Arry<T> d = derivative(coeffs);
 
@@ -52,13 +54,15 @@ T newton_raphson(const Arry<T> &coeffs, const T guess, const double tol)
 
 CArry aberth(const CArry &coeffs, const CArry &guess, const double tol)
 {
+    CHECK_COEFS(coeffs, 1e-12);
+
+# ifdef NDEBUG
+    if (guess.size() == 0) throw exceptions::PolynomialErrorGeneral(
+            __FL__, "The length of initial guess can not be zero.");
+# endif
+
     // alias to the length of provided coefficient array
     const auto &len = coeffs.size();
-
-# ifndef NDEBUG
-    using namespace exceptions;
-    if (len == 0) throw ZeroCoeffsLength(__FILE__, __LINE__);
-# endif
 
     // if degree is 0, no root exists; return a zero-length array
     if (len == 1) return CArry(0);
@@ -98,10 +102,10 @@ CArry aberth(const CArry &coeffs, const CArry &guess, const double tol)
             delta = 1.0 - delta;
             delta = temp / delta;
 
-            if (rts[i] == 0.0) stop[i] = true; // note we use exact zero here
             if ((std::abs(delta)/std::abs(rts[i])) < tol) stop[i] = true;
 
             rts[i] -= delta;
+            if (evaluate(coeffs, rts[i]) == 0.0) stop[i] = true; // exact zero
         }
 
         // check the number of iterations
@@ -154,10 +158,7 @@ CArry aberth(const DArry &coeffs, const DArry &guess, const double tol)
 
 CArry aberth(const CArry &coeffs, const double tol)
 {
-# ifndef NDEBUG
-    using namespace exceptions;
-    if (coeffs.size() == 0) throw ZeroCoeffsLength(__FILE__, __LINE__);
-# endif
+    CHECK_COEFS(coeffs, 1e-12);
 
     // if degree is 0, no root exists; return a zero-length array
     if (coeffs.size() == 1) return CArry(0);
@@ -175,10 +176,7 @@ CArry aberth(const CArry &coeffs, const double tol)
 
 CArry aberth(const DArry &coeffs, const double tol)
 {
-# ifndef NDEBUG
-    using namespace exceptions;
-    if (coeffs.size() == 0) throw ZeroCoeffsLength(__FILE__, __LINE__);
-# endif
+    CHECK_COEFS(coeffs, 1e-12);
 
     // if degree is 0, no root exists; return a zero-length array
     if (coeffs.size() == 1) return CArry(0);
@@ -196,9 +194,7 @@ CArry aberth(const DArry &coeffs, const double tol)
 
 CArry yan_and_chieng_2006(const CArry &coeffs, const double tol)
 {
-# ifndef NDEBUG
-    if (coeffs.size() == 0) throw exceptions::ZeroCoeffsLength(__FILE__, __LINE__);
-# endif
+    CHECK_COEFS(coeffs, 1e-12);
 
     CArry     drv = derivative(coeffs); // direvative
     CArry     agcd = GCD(coeffs, drv); // approximated GCD

@@ -23,6 +23,9 @@ namespace basic
 template <typename T>
 Arry<T> add(const Arry<T> &p1, const Arry<T> &p2)
 {
+    CHECK_COEFS(p1, 1e-12);
+    CHECK_COEFS(p2, 1e-12);
+
     const Arry<T> *pl = &p1, *ps = &p2;
     Arry<T> result;
 
@@ -35,11 +38,8 @@ Arry<T> add(const Arry<T> &p1, const Arry<T> &p2)
 
     std::copy(pl->begin()+ps->size(), pl->end(), result.begin()+ps->size());
 
-    while (true)
-    {
-        if (std::abs(result.back()) < 1e-12) result.pop_back();
-        else break;
-    }
+    // eliminate zero leading coefficients
+    trim_leading_zeros(result, 1e-12);
 
     return result;
 }
@@ -47,18 +47,14 @@ Arry<T> add(const Arry<T> &p1, const Arry<T> &p2)
 template <typename T>
 Arry<T> add(const Arry<T> &p, const T &c)
 {
-    Arry<T> result(p);
-    result[0] += c;
+    CHECK_COEFS(p, 1e-12);
+
+    Arry<T> result(p); result[0] += c;
     return result;
 }
 
 template <typename T>
-Arry<T> add(const T &c, const Arry<T> &p)
-{
-    Arry<T> result(p);
-    result[0] += c;
-    return result;
-}
+Arry<T> add(const T &c, const Arry<T> &p) { return add(p, c); }
 
 
 template <typename T>
@@ -68,25 +64,17 @@ Arry<T> substract(const Arry<T> &p1, const Arry<T> &p2)
 }
 
 template <typename T>
-Arry<T> substract(const Arry<T> &p, const T &c)
-{
-    return add(p, -c);
-}
+Arry<T> substract(const Arry<T> &p, const T &c) { return add(p, -c); }
 
 template <typename T>
-Arry<T> substract(const T &c, const Arry<T> &p)
-{
-    return add(c, multiply(p, T(-1.0)));
-}
+Arry<T> substract(const T &c, const Arry<T> &p) { return substract({c}, p); }
 
 
 template <typename T>
 Arry<T> multiply(const Arry<T> &p1, const Arry<T> &p2)
 {
-# ifndef NDEBUG
-    if (p1.size() == 0) throw exceptions::ZeroCoeffsLength(__FILE__, __LINE__);
-    if (p2.size() == 0) throw exceptions::ZeroCoeffsLength(__FILE__, __LINE__);
-# endif
+    CHECK_COEFS(p1, 1e-12);
+    CHECK_COEFS(p2, 1e-12);
 
     // claculate the lenth of final polynomial
     const int &len = p1.size() + p2.size() - 1;
@@ -101,33 +89,41 @@ Arry<T> multiply(const Arry<T> &p1, const Arry<T> &p2)
             [&c](const T &x, const T &y)->T{return c*x+y;});
     }
 
+    trim_leading_zeros(result, 1e-12);
+
     return result;
 }
 
 template <typename T>
 Arry<T> multiply(const Arry<T> &p, const T &c)
 {
+    CHECK_COEFS(p, 1e-12);
+
+    // special case. Note we use exactly zero here.
+    if (std::abs(c) == 0.0) return {0.0};
+
     Arry<T> result(p);
     for(auto &it: result) it *= c;
+    trim_leading_zeros(result, 1e-12);
     return result;
 }
 
 template <typename T>
-Arry<T> multiply(const T &c, const Arry<T> &p)
-{
-    Arry<T> result(p);
-    for(auto &it: result) it *= c;
-    return result;
-}
+Arry<T> multiply(const T &c, const Arry<T> &p) { return multiply(p, c); }
 
 
 template <typename T>
 Arry<T> divide(const Arry<T> &p1, const Arry<T> &p2, Arry<T> &r)
 {
-# ifndef NDEBUG
-    if (p1.size() == 0) throw exceptions::ZeroCoeffsLength(__FILE__, __LINE__);
-    if (p2.size() == 0) throw exceptions::ZeroCoeffsLength(__FILE__, __LINE__);
-# endif
+    CHECK_COEFS(p1, 1e-12);
+    CHECK_COEFS(p2, 1e-12);
+
+    // special case: p2 = constant
+    if (p2.size() == 1)
+    {
+        r = Arry<T>(1, 0.0);
+        return divide(p1, p2[0]);
+    }
 
     // reset remainder's initial value to polynomial 1
     r = p1;
@@ -166,6 +162,11 @@ Arry<T> divide(const Arry<T> &p1, const Arry<T> &p2)
 template <typename T>
 Arry<T> divide(const Arry<T> &p, const T &c)
 {
+    CHECK_COEFS(p, 1e-12);
+
+    // special case. Note we use exactly zero here.
+    if (std::abs(c) == 0.0) throw exceptions::DivideByZero(__FL__);
+
     Arry<T> result(p);
     for(auto &it: result) it /= c;
     return result;
@@ -197,6 +198,9 @@ DArry to_DArry(const CArry &p, const double tol)
 template <typename T>
 Arry<T> GCD(const Arry<T> &p1, const Arry<T> &p2, const double tol)
 {
+    CHECK_COEFS(p1, 1e-12);
+    CHECK_COEFS(p2, 1e-12);
+
     Arry<T> a, b, q, r;
     double delta;
 
@@ -205,22 +209,36 @@ Arry<T> GCD(const Arry<T> &p1, const Arry<T> &p2, const double tol)
     auto f = [](const double &x, const T &y)->double{return x+std::norm(y);};
 
     int iter = 1;
-    do
+    while(true)
     {
         q = divide(a, b, r);
+        trim_leading_zeros(r, 1e-12);
 
         delta = std::sqrt(
                 std::accumulate(std::begin(r), std::end(r), 0.0, f) /
                 std::accumulate(std::begin(b), std::end(b), 0.0, f));
+
+        if (delta < tol) break;
 
         a = b;
         b = divide(r, r.back());
 
         iter += 1;
         if (iter > 10000) throw exceptions::InfLoop(__FILE__, __LINE__);
-    } while(delta > tol);
+    }
 
-    return a;
+    return b;
+}
+
+// trim leading zero coefficients
+template <typename T>
+void trim_leading_zeros(Arry<T> &p, const double tol)
+{
+    while (p.size() > 1)
+    {
+        if (std::abs(p.back()) < tol) p.pop_back();
+        else break;
+    }
 }
 
 
@@ -229,7 +247,7 @@ template <typename T>
 Arry<T> to_coefficients(const T &l, const T* const &rts, const int len)
 {
 # ifndef NDEBUG
-    if (len < 0) throw exceptions::NegativeCoeffsLength(__FILE__, __LINE__, len);
+    if (len < 0) throw exceptions::NegativeCoeffsLength(__FL__, len);
 # endif
 
     // polynomial f(x) = constant
@@ -275,6 +293,9 @@ template CArry divide(const CArry &p, const Cmplx  &c);
 template DArry GCD(const DArry &p1, const DArry &p2, const double tol);
 template CArry GCD(const CArry &p1, const CArry &p2, const double tol);
 
+template void trim_leading_zeros(DArry &p, const double tol);
+template void trim_leading_zeros(CArry &p, const double tol);
+
 template DArry to_coefficients(const double &l, const double* const &rts, const int len);
 template CArry to_coefficients(const Cmplx &l, const Cmplx* const &rts, const int len);
 template DArry to_coefficients(const double &l, const DArry &rts);
@@ -287,6 +308,7 @@ template CArry to_coefficients(const Cmplx &l, const CArry &rts);
 // operator << for DArry
 std::ostream &operator<<(std::ostream &os, const simpoly::basic::DArry &v)
 {
+    if (v.size() == 0) return os;
     for(auto it=v.begin(); it<v.end()-1; ++it)
         os << *it << ", ";
     os << v.back();
@@ -297,6 +319,7 @@ std::ostream &operator<<(std::ostream &os, const simpoly::basic::DArry &v)
 // operator << for CArry
 std::ostream &operator<<(std::ostream &os, const simpoly::basic::CArry &v)
 {
+    if (v.size() == 0) return os;
     for(auto it=v.begin(); it<v.end()-1; ++it)
         os << *it << ", ";
     os << v.back();

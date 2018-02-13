@@ -14,6 +14,21 @@
 
 # define __FL__ __FILE__, __LINE__
 
+# ifndef NDEBUG
+
+    # define CHECK_COEFS(c, tol) \
+    { \
+        if (c.size() == 0) throw simpoly::exceptions::ZeroCoeffsLength(__FL__); \
+        if ((c.size() > 1) && (std::abs(c.back()) < tol)) \
+            throw simpoly::exceptions::ZeroLeadingCoeff(__FL__); \
+    }
+
+# else
+
+    # define CHECK_COEFS(c)
+
+# endif
+
 namespace simpoly
 {
 namespace exceptions
@@ -35,12 +50,13 @@ private:
 }; // end of class PolynomialErrorGeneral
 
 
-class ZeroDegree : public PolynomialErrorGeneral
+class DivideByZero : public PolynomialErrorGeneral
 {
 public:
 
-    ZeroDegree(const std::string &file, const int &line):
-        PolynomialErrorGeneral(file, line, "Zero degree of polynomial detected.") {};
+    DivideByZero(const std::string &file, const int &line):
+        PolynomialErrorGeneral(file, line,
+                "Divide-by-zero detected.") {};
 };
 
 
@@ -65,6 +81,16 @@ public:
     ZeroCoeffsLength(const std::string &file, const int &line):
         PolynomialErrorGeneral(file, line,
                 "Zero-length coefficient vector/array detected.") {};
+};
+
+
+class ZeroLeadingCoeff : public PolynomialErrorGeneral
+{
+public:
+
+    ZeroLeadingCoeff(const std::string &file, const int &line):
+        PolynomialErrorGeneral(file, line,
+                "Zero leading coefficient detected.") {};
 };
 
 

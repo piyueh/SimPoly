@@ -34,6 +34,8 @@ T evaluate(const T* const &bg, const int len, const T x)
 template <typename T>
 T evaluate(const Arry<T> &coeffs, const T x)
 {
+    CHECK_COEFS(coeffs, 1e-12);
+
     return evaluate(&coeffs[0], coeffs.size(), x);
 }
 
