@@ -6,7 +6,6 @@
  * \date 2018-01-29
  */
 
-
 # include <algorithm>
 # include <numeric>
 # include <cmath>
@@ -67,7 +66,7 @@ template <typename T>
 Arry<T> substract(const Arry<T> &p, const T &c) { return add(p, -c); }
 
 template <typename T>
-Arry<T> substract(const T &c, const Arry<T> &p) { return substract({c}, p); }
+Arry<T> substract(const T &c, const Arry<T> &p) { return substract(Arry<T>({c}), p); }
 
 
 template <typename T>
