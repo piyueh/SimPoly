@@ -166,5 +166,22 @@ public:
     const double &value;
 };
 
+
+class JacobiParameters : public PolynomialErrorGeneral
+{
+public:
+
+    JacobiParameters(
+            const std::string &file, const int &line,
+            const double &a, const double &b):
+        alpha(a), beta(b),
+        PolynomialErrorGeneral(file, line,
+            "Alpha or Beta parameter in Jacobi polynomial is wrong: "
+            "(Alpha, Beta) = (" +
+            std::to_string(a) + ", " + std::to_string(b) + ")") {};
+
+    const double &alpha, &beta;
+};
+
 } // end of namespace exceptions
 } // end of namespace simpoly

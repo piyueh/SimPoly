@@ -13,6 +13,7 @@ SET(SOURCE
     ${SRC}/basic/root_findings.cpp
     ${SRC}/polynomial/polynomial.cpp
     ${SRC}/polynomial/operators.cpp
+    ${SRC}/polynomial/jacobi.cpp
     )
 
 # SimPoly library

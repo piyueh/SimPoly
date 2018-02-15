@@ -84,9 +84,9 @@ TEST(PolynomialReset, type)
 
     basic::CArry allroots({ 1.0, -1.0, basic::Cmplx(2.0, -1.0), basic::Cmplx(2.0, 1.0) });
 
-    p.set(poly::Lagrange);
+    p.set(poly::LAGRANGE);
 
-    run(c, rr, cr, allroots, p, poly::Lagrange, false, 4, 2, 2);
+    run(c, rr, cr, allroots, p, poly::LAGRANGE, false, 4, 2, 2);
 }
 
 TEST(PolynomialReset, Coefficient1)
@@ -136,7 +136,7 @@ TEST(PolynomialReset, Coefficient1)
 
     p.set(c);
 
-    run(c, rr, cr, allroots, p, poly::General, false, 15, 5, 10);
+    run(c, rr, cr, allroots, p, poly::GENERAL, false, 15, 5, 10);
 }
 
 TEST(PolynomialReset, Coefficient2)
@@ -180,7 +180,7 @@ TEST(PolynomialReset, Coefficient2)
 
     p.set(c);
 
-    run(c, rr, cr, allr, p, poly::General, false, 13, 7, 6);
+    run(c, rr, cr, allr, p, poly::GENERAL, false, 13, 7, 6);
 }
 
 TEST(PolynomialReset, RealRoots)
@@ -205,7 +205,7 @@ TEST(PolynomialReset, RealRoots)
 
     p.set(1.5, rr);
 
-    run(c, rr, cr, allr, p, poly::General, true, 7, 7, 0);
+    run(c, rr, cr, allr, p, poly::GENERAL, true, 7, 7, 0);
 }
 
 TEST(PolynomialReset, CmplxRoots)
@@ -246,7 +246,7 @@ TEST(PolynomialReset, CmplxRoots)
 
     p.set(1.0, cr);
 
-    run(c, rr, cr, allr, p, poly::General, false, 10, 0, 10);
+    run(c, rr, cr, allr, p, poly::GENERAL, false, 10, 0, 10);
 }
 
 TEST(PolynomialReset, MixedRoots)
@@ -286,7 +286,7 @@ TEST(PolynomialReset, MixedRoots)
 
     p.set(1.0, rr, cr);
 
-    run(c, rr, cr, allr, p, poly::General, false, 11, 5, 6);
+    run(c, rr, cr, allr, p, poly::GENERAL, false, 11, 5, 6);
 }
 
 TEST(PolynomialReset, CoefficientRealRoots)
@@ -322,7 +322,7 @@ TEST(PolynomialReset, CoefficientRealRoots)
 
     p.set(c, rr);
 
-    run(c, rr, cr, allr, p, poly::General, true, 12, 12, 0);
+    run(c, rr, cr, allr, p, poly::GENERAL, true, 12, 12, 0);
 }
 
 TEST(PolynomialReset, CoefficientCmplxRoots)
@@ -358,7 +358,7 @@ TEST(PolynomialReset, CoefficientCmplxRoots)
 
     p.set(c, cr);
 
-    run(c, rr, cr, allr, p, poly::General, false, 8, 0, 8);
+    run(c, rr, cr, allr, p, poly::GENERAL, false, 8, 0, 8);
 }
 
 TEST(PolynomialReset, CoefficientMixedRoots)
@@ -402,7 +402,7 @@ TEST(PolynomialReset, CoefficientMixedRoots)
 
     p.set(c, rr, cr);
 
-    run(c, rr, cr, allr, p, poly::General, false, 13, 7, 6);
+    run(c, rr, cr, allr, p, poly::GENERAL, false, 13, 7, 6);
 }
 
 TEST(PolynomialReset, SingleCoefficient)
@@ -427,7 +427,7 @@ TEST(PolynomialReset, SingleCoefficient)
             basic::Cmplx(2.3995152719948316111, -1.2935130871762103855),
             basic::Cmplx(2.3995152719948329434, 1.2935130871762121618)});
 
-    run(c, rr, cr, allroots, p, poly::General, false, 4, 0, 4);
+    run(c, rr, cr, allroots, p, poly::GENERAL, false, 4, 0, 4);
 }
 
 TEST(PolynomialAssignment, MoveAssignment)
@@ -471,7 +471,7 @@ TEST(PolynomialAssignment, MoveAssignment)
 
     p = std::move(poly::Polynomial(c));
 
-    run(c, rr, cr, allr, p, poly::General, false, 13, 7, 6);
+    run(c, rr, cr, allr, p, poly::GENERAL, false, 13, 7, 6);
 }
 
 TEST(PolynomialAssignment, CopyAssignment)
@@ -514,5 +514,5 @@ TEST(PolynomialAssignment, CopyAssignment)
     poly::Polynomial p(c);
     poly::Polynomial pp = p;
 
-    run(c, rr, cr, allr, pp, poly::General, false, 13, 7, 6);
+    run(c, rr, cr, allr, pp, poly::GENERAL, false, 13, 7, 6);
 }

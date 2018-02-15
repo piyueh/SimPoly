@@ -117,7 +117,7 @@ TEST(PolynomialConstruct, Coefficient1)
 
     poly::Polynomial p(c);
 
-    run(c, rr, cr, allroots, p, poly::General, false, 15, 5, 10);
+    run(c, rr, cr, allroots, p, poly::GENERAL, false, 15, 5, 10);
 }
 
 TEST(PolynomialConstruct, Coefficient2)
@@ -159,7 +159,7 @@ TEST(PolynomialConstruct, Coefficient2)
 
     poly::Polynomial p(c);
 
-    run(c, rr, cr, allr, p, poly::General, false, 13, 7, 6);
+    run(c, rr, cr, allr, p, poly::GENERAL, false, 13, 7, 6);
 }
 
 TEST(PolynomialConstruct, RealRoots)
@@ -182,7 +182,7 @@ TEST(PolynomialConstruct, RealRoots)
 
     poly::Polynomial p(1.5, rr);
 
-    run(c, rr, cr, allr, p, poly::General, true, 7, 7, 0);
+    run(c, rr, cr, allr, p, poly::GENERAL, true, 7, 7, 0);
 }
 
 TEST(PolynomialConstruct, CmplxRoots)
@@ -221,7 +221,7 @@ TEST(PolynomialConstruct, CmplxRoots)
 
     poly::Polynomial p(1.0, cr);
 
-    run(c, rr, cr, allr, p, poly::General, false, 10, 0, 10);
+    run(c, rr, cr, allr, p, poly::GENERAL, false, 10, 0, 10);
 }
 
 TEST(PolynomialConstruct, MixedRoots)
@@ -259,7 +259,7 @@ TEST(PolynomialConstruct, MixedRoots)
 
     poly::Polynomial p(1.0, rr, cr);
 
-    run(c, rr, cr, allr, p, poly::General, false, 11, 5, 6);
+    run(c, rr, cr, allr, p, poly::GENERAL, false, 11, 5, 6);
 }
 
 TEST(PolynomialConstruct, CoefficientRealRoots)
@@ -293,7 +293,7 @@ TEST(PolynomialConstruct, CoefficientRealRoots)
 
     poly::Polynomial p(c, rr);
 
-    run(c, rr, cr, allr, p, poly::General, true, 12, 12, 0);
+    run(c, rr, cr, allr, p, poly::GENERAL, true, 12, 12, 0);
 }
 
 TEST(PolynomialConstruct, CoefficientCmplxRoots)
@@ -327,7 +327,7 @@ TEST(PolynomialConstruct, CoefficientCmplxRoots)
 
     poly::Polynomial p(c, cr);
 
-    run(c, rr, cr, allr, p, poly::General, false, 8, 0, 8);
+    run(c, rr, cr, allr, p, poly::GENERAL, false, 8, 0, 8);
 }
 
 TEST(PolynomialConstruct, CoefficientMixedRoots)
@@ -369,7 +369,7 @@ TEST(PolynomialConstruct, CoefficientMixedRoots)
 
     poly::Polynomial p(c, rr, cr);
 
-    run(c, rr, cr, allr, p, poly::General, false, 13, 7, 6);
+    run(c, rr, cr, allr, p, poly::GENERAL, false, 13, 7, 6);
 }
 
 TEST(PolynomialConstruct, MoveConstruction)
@@ -411,7 +411,7 @@ TEST(PolynomialConstruct, MoveConstruction)
 
     poly::Polynomial p(std::move(poly::Polynomial(c)));
 
-    run(c, rr, cr, allr, p, poly::General, false, 13, 7, 6);
+    run(c, rr, cr, allr, p, poly::GENERAL, false, 13, 7, 6);
 }
 
 TEST(PolynomialConstruct, CopyConstruction)
@@ -454,5 +454,5 @@ TEST(PolynomialConstruct, CopyConstruction)
     poly::Polynomial p(c);
     poly::Polynomial pp(p);
 
-    run(c, rr, cr, allr, pp, poly::General, false, 13, 7, 6);
+    run(c, rr, cr, allr, pp, poly::GENERAL, false, 13, 7, 6);
 }

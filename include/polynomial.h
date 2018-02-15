@@ -18,7 +18,7 @@ namespace poly
 {
 
 /** \brief Type of polynomial*/
-enum PolyType: int { General=0, Legendre, Lagrange };
+enum PolyType: int { GENERAL=0, JACOBI, LEGENDRE, LAGRANGE };
 
 class Polynomial
 {
@@ -124,7 +124,7 @@ public:
      *
      * This only resets the type, but coefficients and roots keep unchanged.
      *
-     * \param type [in] Type of the polynomial (default: General).
+     * \param type [in] Type of the polynomial (default: GENERAL).
      */
     void set(const PolyType &type);
 
@@ -522,6 +522,21 @@ protected:
      */
     void _get_roots(const double tol=1e-12) const;
 };
+
+
+/**
+ * \brief A factory function creating Jacobi-family polynomials.
+ *
+ * \param alpha [in] Alpha parameter for Jacobi polynomial.
+ * \param beta [in] Beta parameter for Jacobi polynomial.
+ * \param n [in] Degree of Jacobi polynomial.
+ * \param normalized [in] To make the leading coefficient 1.0 (default: true).
+ *
+ * \return Jacobi polynomial.
+ */
+Polynomial Jacobi(const double alpha, const double beta,
+        const unsigned n, bool normalized=true);
+
 
 Polynomial divide(const Polynomial &p1, const Polynomial &p2, Polynomial &R);
 Polynomial quotient(const Polynomial &p1, const Polynomial &p2);

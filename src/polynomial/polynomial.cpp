@@ -58,7 +58,7 @@ void Polynomial::set(const PolyType &type) { _type = type; }
 void Polynomial::set(const DArry &coef)
 {
     _coef = coef;// copy/move coef to _coef
-    _type = PolyType::General;
+    _type = PolyType::GENERAL;
     _d = _coef.size() - 1; // get degree of polynomial
     _nrr = _ncr = 0; // initialize _nrr and _ncr
     _rroots.clear();
@@ -79,7 +79,7 @@ void Polynomial::set(const double l, const DArry &roots)
     _ncr = 0;
 
     _coef = to_coefficients(l, _rroots);
-    _type = PolyType::General;
+    _type = PolyType::GENERAL;
 }
 
 // re-set roots
@@ -95,7 +95,7 @@ void Polynomial::set(const double l, const CArry &roots)
 
     // note this Polynomial class can only handle real-number coefficients
     _coef = to_DArry(to_coefficients(Cmplx(l), _croots));
-    _type = PolyType::General;
+    _type = PolyType::GENERAL;
 }
 
 // re-set roots
@@ -114,7 +114,7 @@ void Polynomial::set(const double l, const DArry &rroots, const CArry &croots)
     // note this Polynomial class can only handle real-number coefficients
     _coef = to_DArry(to_coefficients(Cmplx(1.0), _croots));
     _coef = multiply(_coef, to_coefficients(l, _rroots));
-    _type = PolyType::General;
+    _type = PolyType::GENERAL;
 }
 
 // re-set both roots and coefficients
@@ -131,7 +131,7 @@ void Polynomial::set(const DArry &coef, const DArry &roots)
 
     _use_roots = true;
     _have_roots = true;
-    _type = PolyType::General;
+    _type = PolyType::GENERAL;
 
 # ifndef NDEBUG
     if (_d != _nrr) throw exceptions::UnmatchedLength(__FL__, _d, _nrr);
@@ -158,7 +158,7 @@ void Polynomial::set(const DArry &coef, const CArry &roots)
 
     _use_roots = false;
     _have_roots = true;
-    _type = PolyType::General;
+    _type = PolyType::GENERAL;
 
 # ifndef NDEBUG
     if (_d != _ncr) throw UnmatchedLength(__FL__, _d, _ncr);
@@ -186,7 +186,7 @@ void Polynomial::set(const DArry &coef,
 
     _use_roots = false;
     _have_roots = true;
-    _type = PolyType::General;
+    _type = PolyType::GENERAL;
 
 # ifndef NDEBUG
     if (_d != (_nrr + _ncr)) throw UnmatchedLength(__FL__, _d, _ncr+_nrr);
@@ -212,7 +212,7 @@ void Polynomial::set(const int d, const double value)
     _coef[d] = value;
 
     // reset some information due to we don't update roots here
-    _type = PolyType::General;
+    _type = PolyType::GENERAL;
     _nrr = _ncr = 0; // initialize _nrr and _ncr
     _rroots.clear();
     _croots.clear();
