@@ -183,5 +183,15 @@ public:
     const double &alpha, &beta;
 };
 
+
+class IllegalType : public PolynomialErrorGeneral
+{
+public:
+
+    IllegalType(const std::string &file, const int &line, const std::string s):
+        PolynomialErrorGeneral(file, line,
+            "Illegal type. Only " + s + " is/are allowed.") {};
+};
+
 } // end of namespace exceptions
 } // end of namespace simpoly

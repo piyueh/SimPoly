@@ -18,7 +18,7 @@ namespace poly
 {
 
 /** \brief Type of polynomial*/
-enum PolyType: int { GENERAL=0, JACOBI, LEGENDRE, LAGRANGE };
+enum PolyType: int { GENERAL=0, JACOBI, LEGENDRE, RIGHTRADAU, LEFTRADAU, LAGRANGE };
 
 class Polynomial
 {
@@ -548,6 +548,25 @@ Polynomial Jacobi(const double alpha, const double beta, const unsigned n);
  * \return Legendre polynomial.
  */
 Polynomial Legendre(const unsigned n);
+
+
+/**
+ * \brief A factory function creating Radau polynomials,
+ *
+ * Radau here is defined as
+ *      Righ Radau: (1-x)*Jacobi(1, 0, n-1) / 2.0 * (-1)^(n+1)
+ *      Left Radau: (1+x)*Jacobi(0, 1, n-1) / 2.0
+ *
+ * The scaling is defined so that,
+ *      Right Radau: R(-1.0) = 1.0; R(1.0) = 0.0
+ *      Left Radau: R(-1.0) = 0.0; R(1.0) = 1.0
+ *
+ * \param n [in] Degree of Jacobi polynomial.
+ * \param type [in] either PolyType::RIGHTRADAU or PolyType::LEFTRADAU
+ *
+ * \return Radau polynomial.
+ */
+Polynomial Radau(const unsigned n, const PolyType type);
 
 
 Polynomial divide(const Polynomial &p1, const Polynomial &p2, Polynomial &R);
