@@ -19,7 +19,7 @@ ADD_EXECUTABLE(basic
     )
 
 TARGET_INCLUDE_DIRECTORIES(basic PRIVATE ${GTEST_INCLUDE_DIRS})
-TARGET_LINK_LIBRARIES(basic ${GTEST_BOTH_LIBRARIES} simpoly)
+TARGET_LINK_LIBRARIES(basic GTest::GTest GTest::Main simpoly)
 
 # add test targets: polynomial
 ADD_EXECUTABLE(polynomial 
@@ -33,7 +33,7 @@ ADD_EXECUTABLE(polynomial
     )
 
 TARGET_INCLUDE_DIRECTORIES(polynomial PRIVATE ${GTEST_INCLUDE_DIRS})
-TARGET_LINK_LIBRARIES(polynomial ${GTEST_BOTH_LIBRARIES} simpoly)
+TARGET_LINK_LIBRARIES(polynomial GTest::GTest GTest::Main simpoly)
 
 # use GoogleTest
 INCLUDE(GoogleTest)

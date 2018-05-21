@@ -55,7 +55,7 @@ TEST(JacobiPoly, JacobiPoly2)
 
 TEST(JacobiPoly, JacobiPoly3)
 {
-    poly::Polynomial p = poly::Jacobi(0.5782376534557787, -0.4336347338543658, 10);
+    poly::Polynomial p = poly::Jacobi(0.5782376534557787, -0.4336347338543658, 10, true);
 
     poly::Polynomial expect = poly::Polynomial({
         -9.2386947882105996399e-04, 9.4147560933420595952e-03, 5.6244058317055492524e-02,
@@ -65,4 +65,20 @@ TEST(JacobiPoly, JacobiPoly3)
 
     ASSERT_EQ(expect, p);
     ASSERT_EQ(poly::PolyType::JACOBI, p.type());
+}
+
+TEST(JacobiPoly, JacobiPoly4)
+{
+    poly::Polynomial p1 = poly::Jacobi(0., 0., 7, false);
+    poly::Polynomial p2 = poly::Jacobi(0., 0., 7, false);
+    poly::Polynomial p3 = (p1*p2).integ();
+    ASSERT_NEAR(2.0/(2.0*7+1), p3(1.0)-p3(-1.0), 1e-10);
+}
+
+TEST(JacobiPoly, JacobiPoly5)
+{
+    poly::Polynomial p1 = poly::Jacobi(0., 0., 5);
+    poly::Polynomial p2 = poly::Jacobi(0., 0., 18);
+    poly::Polynomial p3 = (p1*p2).integ();
+    ASSERT_NEAR(0.0, p3(1.0)-p3(-1.0), 1e-10);
 }
