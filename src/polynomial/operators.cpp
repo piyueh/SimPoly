@@ -95,7 +95,28 @@ Polynomial & Polynomial::operator-=(const double &rhs)
 // *=
 Polynomial & Polynomial::operator*=(const Polynomial &rhs)
 {
-    set(multiply(_coef, rhs._coef));
+    _coef = basic::multiply(_coef, rhs._coef);
+    _d += rhs._d;
+    _type = PolyType::GENERAL;
+
+    if (_have_roots && rhs._have_roots) // root-initialized
+    {
+        _rroots.insert(_rroots.end(), rhs._rroots.begin(), rhs._rroots.end());
+        _croots.insert(_croots.end(), rhs._croots.begin(), rhs._croots.end());
+        _nrr += rhs._nrr;
+        _ncr += rhs._ncr;
+
+        if (!(_use_roots && rhs._use_roots)) _use_roots = false;
+    }
+    else
+    {
+        _nrr = _ncr = 0;
+        _rroots.clear();
+        _croots.clear();
+        _use_roots = false;
+        _have_roots = false;
+    }
+
     return *this;
 }
 

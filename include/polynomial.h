@@ -535,7 +535,7 @@ protected:
  * \return Jacobi polynomial.
  */
 Polynomial Jacobi(const double alpha, const double beta,
-        const unsigned n, bool normalized=true);
+        const unsigned n, bool normalized=false);
 
 
 Polynomial divide(const Polynomial &p1, const Polynomial &p2, Polynomial &R);
