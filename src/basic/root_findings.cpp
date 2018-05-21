@@ -27,7 +27,7 @@ CArry low_degree_roots1(const CArry &P) { return {-P[0]/P[1]}; }
 CArry low_degree_roots2(const CArry &P)
 {
     Cmplx twoA = 2.0 * P[2];
-    Cmplx sqFourAC = std::sqrt(4.0 * P[2] * P[0]);
+    Cmplx sqFourAC = std::sqrt(P[1] * P[1] - 4.0 * P[2] * P[0]);
     return {(-P[1]+sqFourAC)/twoA, (-P[1]-sqFourAC)/twoA};
 }
 

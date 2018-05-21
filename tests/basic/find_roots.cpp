@@ -26,7 +26,7 @@ static auto f = [](basic::Cmplx i, basic::Cmplx j)->bool {
     {
         if (std::abs(i.real()-j.real()) <= 1e-11)
             if (i.imag() <= j.imag()) return true;
-        
+
         if ((i.real()-j.real()) < -1e-11) return true;
     }
     if ((std::abs(i)-std::abs(j)) < -1e-11) return true;
@@ -40,25 +40,25 @@ TEST(PolynomialRoots, CheckExceptions)
 {
     ASSERT_THROW(basic::aberth(basic::CArry(0), basic::CArry(0)),
             simpoly::exceptions::ZeroCoeffsLength);
-    
+
     ASSERT_THROW(basic::aberth(basic::DArry(0), basic::CArry(0)),
             simpoly::exceptions::ZeroCoeffsLength);
-    
+
     ASSERT_THROW(basic::aberth(basic::CArry(0), basic::DArry(0)),
             simpoly::exceptions::ZeroCoeffsLength);
-    
+
     ASSERT_THROW(basic::aberth(basic::DArry(0), basic::DArry(0)),
             simpoly::exceptions::ZeroCoeffsLength);
-    
+
     ASSERT_THROW(basic::aberth(basic::CArry(0)),
             simpoly::exceptions::ZeroCoeffsLength);
-    
+
     ASSERT_THROW(basic::aberth(basic::DArry(0)),
             simpoly::exceptions::ZeroCoeffsLength);
-    
+
     ASSERT_THROW(basic::yan_and_chieng_2006(basic::CArry(0)),
             simpoly::exceptions::ZeroCoeffsLength);
-    
+
     ASSERT_THROW(basic::yan_and_chieng_2006(basic::DArry(0)),
             simpoly::exceptions::ZeroCoeffsLength);
 }
@@ -66,7 +66,7 @@ TEST(PolynomialRoots, CheckExceptions)
 
 TEST(PolynomialRoots, ComplexRootsAberth1)
 {
-    
+
     basic::CArry c({basic::Cmplx(-0.2333161111467611, -0.07203119056462484),
             basic::Cmplx(0.4691992245557093, 0.1069593270345827),
             basic::Cmplx(-0.4626667261153909, 0.01132740583617468),
@@ -76,7 +76,7 @@ TEST(PolynomialRoots, ComplexRootsAberth1)
             basic::Cmplx(-2.340724865590584, -0.01971983376224859),
             basic::Cmplx(-0.5151163499273337, 1.464560317090324),
             basic::Cmplx(1.0, 0.0)});
-    
+
     basic::CArry expect({basic::Cmplx(0.7005658123938592, -0.8463540437130455),
             basic::Cmplx(0.9446989441874694, -0.257812273394918),
             basic::Cmplx(0.05705818190287304, 0.4239984931397236),
@@ -85,16 +85,16 @@ TEST(PolynomialRoots, ComplexRootsAberth1)
             basic::Cmplx(-0.8014849228035563, -0.5048110577579954),
             basic::Cmplx(0.6918133537758795, -0.1193762463708401),
             basic::Cmplx(0.7121026739314782, -0.2379777404982741)});
-    
+
     basic::CArry guess(expect.size());
     for(auto &it: guess) it = basic::Cmplx(drand(generator), drand(generator));
 
     basic::CArry result = basic::aberth(c, guess);
-    
+
     // sort `expect` and `result` so we can compare them term by term
     std::sort(std::begin(expect), std::end(expect), f);
     std::sort(std::begin(result), std::end(result), f);
-    
+
     for(unsigned i=0; i<expect.size(); ++i)
     {
         ASSERT_NEAR(expect[i].real(), result[i].real(), 1e-10);
@@ -104,7 +104,7 @@ TEST(PolynomialRoots, ComplexRootsAberth1)
 
 TEST(PolynomialRoots, ComplexRootsAberth2)
 {
-    
+
     basic::CArry c({
             basic::Cmplx(-0.005728250342466052, -0.002271398296873492),
             basic::Cmplx(-0.01308912745807032, -0.01213438492830167),
@@ -127,7 +127,7 @@ TEST(PolynomialRoots, ComplexRootsAberth2)
             basic::Cmplx(0.9524783367812539, -0.6506310156921662),
             basic::Cmplx(1.141297932726919, -1.94837189217718),
             basic::Cmplx(1.0, 0.0) });
-    
+
     basic::CArry expect({
             basic::Cmplx(0.7975362840622007, -0.8462970398548786),
             basic::Cmplx(-0.3807754021788712, -0.06812598591443542),
@@ -149,16 +149,16 @@ TEST(PolynomialRoots, ComplexRootsAberth2)
             basic::Cmplx(0.1121993093826672, 0.941367896408785),
             basic::Cmplx(-0.7887725695474679, 0.3323586067639508),
             basic::Cmplx(-0.9237693056622434, 0.8072378296151359) });
-    
+
     basic::DArry guess(expect.size());
     for(auto &it: guess) it = drand(generator);
 
     basic::CArry result = basic::aberth(c, guess);
-    
+
     // sort `expect` and `result` so we can compare them term by term
     std::sort(std::begin(expect), std::end(expect), f);
     std::sort(std::begin(result), std::end(result), f);
-    
+
     for(unsigned i=0; i<expect.size(); ++i)
     {
         ASSERT_NEAR(expect[i].real(), result[i].real(), 1e-10);
@@ -168,7 +168,7 @@ TEST(PolynomialRoots, ComplexRootsAberth2)
 
 TEST(PolynomialRoots, ComplexRootsAberth3)
 {
-    
+
     basic::DArry c({
             -0.1195107918695455,  0.8447947406345584, -0.6030868103450979,
             -0.9766533913297424, -0.2677767116634977,  0.3804660521221173,
@@ -176,7 +176,7 @@ TEST(PolynomialRoots, ComplexRootsAberth3)
             -0.6073461984864883,  0.8943598261002668, -0.0478803277253317,
             -0.5541643941753234, -0.008585713188056 ,  0.9873624852167924,
             0.1332436172903213 });
-    
+
     basic::CArry expect({
             basic::Cmplx(-7.3453301351775968, 0.),
             basic::Cmplx(-1.0053226251035317, -0.6685050805086484),
@@ -191,18 +191,18 @@ TEST(PolynomialRoots, ComplexRootsAberth3)
             basic::Cmplx(0.5190399155424927, -0.8510559355096275),
             basic::Cmplx(0.5190399155424927, 0.8510559355096275),
             basic::Cmplx(0.8183519974697149, -0.62842193876576),
-            basic::Cmplx(0.8183519974697149, 0.62842193876576),  
+            basic::Cmplx(0.8183519974697149, 0.62842193876576),
             basic::Cmplx(1.0922685323108878, 0.) });
-    
+
     basic::CArry guess(expect.size());
     for(auto &it: guess) it = basic::Cmplx(drand(generator), drand(generator));
 
     basic::CArry result = basic::aberth(c, guess);
-    
+
     // sort `expect` and `result` so we can compare them term by term
     std::sort(std::begin(expect), std::end(expect), f);
     std::sort(std::begin(result), std::end(result), f);
-    
+
     for(unsigned i=0; i<expect.size(); ++i)
     {
         ASSERT_NEAR(expect[i].real(), result[i].real(), 1e-10);
@@ -212,12 +212,12 @@ TEST(PolynomialRoots, ComplexRootsAberth3)
 
 TEST(PolynomialRoots, ComplexRootsAberth4)
 {
-    
+
     basic::DArry c({
             0.5808674560998166, -0.6495173545341641,  0.2415758641182864,
             -0.5399634531874522, -0.1987466764202912,  0.524098092459949 ,
             0.9492147992555258, -0.8465445984978208, -0.2634181317553206 });
-    
+
     basic::CArry expect({
             basic::Cmplx(-3.9897450303048148, 0.),
             basic::Cmplx(-0.8870172577239701, -0.566285872801541),
@@ -227,16 +227,16 @@ TEST(PolynomialRoots, ComplexRootsAberth4)
             basic::Cmplx(0.8661900415687693, 0.),
             basic::Cmplx(0.8688844424396298, -0.3985703106289106),
             basic::Cmplx(0.8688844424396298, 0.3985703106289106)});
-    
+
     basic::DArry guess(expect.size());
     for(auto &it: guess) it = drand(generator);
 
     basic::CArry result = basic::aberth(c, guess);
-    
+
     // sort `expect` and `result` so we can compare them term by term
     std::sort(std::begin(expect), std::end(expect), f);
     std::sort(std::begin(result), std::end(result), f);
-    
+
     for(unsigned i=0; i<expect.size(); ++i)
     {
         ASSERT_NEAR(expect[i].real(), result[i].real(), 1e-10);
@@ -246,7 +246,7 @@ TEST(PolynomialRoots, ComplexRootsAberth4)
 
 TEST(PolynomialRoots, ComplexRootsAberth5)
 {
-    
+
     basic::CArry c({
             basic::Cmplx(-0.006895471860191621, -0.001561652498943983),
             basic::Cmplx(-0.004665280949253687, 0.01159701097464432),
@@ -256,10 +256,10 @@ TEST(PolynomialRoots, ComplexRootsAberth5)
             basic::Cmplx(-0.3012987800316255, -0.3799700159537112),
             basic::Cmplx(-0.5084001253398745, 0.1911652072168439),
             basic::Cmplx(-0.7708335428363232, 0.6687961657562093),
-            basic::Cmplx(0.505299934562367, 0.1622859246626371),  
+            basic::Cmplx(0.505299934562367, 0.1622859246626371),
             basic::Cmplx(1.0, 0.0) });
 
-    
+
     basic::CArry expect({
             basic::Cmplx(0.1771003961465119, -0.4981138554161064),
             basic::Cmplx(0.4633804950170575, -0.4035761261924611),
@@ -271,13 +271,13 @@ TEST(PolynomialRoots, ComplexRootsAberth5)
             basic::Cmplx(0.9608825921769193, -0.06627893962635278),
             basic::Cmplx(-0.2493942766416761, -0.263961836067945) });
 
-    
+
     basic::CArry result = basic::aberth(c);
-    
+
     // sort `expect` and `result` so we can compare them term by term
     std::sort(std::begin(expect), std::end(expect), f);
     std::sort(std::begin(result), std::end(result), f);
-    
+
     for(unsigned i=0; i<expect.size(); ++i)
     {
         ASSERT_NEAR(expect[i].real(), result[i].real(), 1e-10);
@@ -287,7 +287,7 @@ TEST(PolynomialRoots, ComplexRootsAberth5)
 
 TEST(PolynomialRoots, ComplexRootsAberth6)
 {
-    
+
     basic::DArry c({
             -0.0728414666575747, -0.1931113936126789, -0.0998162346855869,
             -0.6720636118447425, -0.6376528554841387,  0.897012721205759 ,
@@ -296,7 +296,7 @@ TEST(PolynomialRoots, ComplexRootsAberth6)
             -0.5211615410858714,  0.1200906586123869,  0.3267892130542112,
             0.4086253995278857,  0.508166061783101 });
 
-    
+
     basic::CArry expect({
             basic::Cmplx(-1.4408869505091435, 0.),
             basic::Cmplx(-0.7299902298252351, -0.5361193861781802),
@@ -312,16 +312,16 @@ TEST(PolynomialRoots, ComplexRootsAberth6)
             basic::Cmplx(0.6470536898794871, -0.8326642583192213),
             basic::Cmplx(0.6470536898794871, 0.8326642583192213),
             basic::Cmplx(0.8910630266770523, -0.478482517291651),
-            basic::Cmplx(0.8910630266770523, 0.478482517291651),  
+            basic::Cmplx(0.8910630266770523, 0.478482517291651),
             basic::Cmplx(0.9353581471985004, 0.) });
 
-    
+
     basic::CArry result = basic::aberth(c);
-    
+
     // sort `expect` and `result` so we can compare them term by term
     std::sort(std::begin(expect), std::end(expect), f);
     std::sort(std::begin(result), std::end(result), f);
-    
+
     for(unsigned i=0; i<expect.size(); ++i)
     {
         ASSERT_NEAR(expect[i].real(), result[i].real(), 1e-10);
@@ -336,22 +336,22 @@ TEST(PolynomialRoots, RealRootsAberth1)
             -0.008217029116396798, -0.1730879244322208,  0.2766216841964072,
             1.248746139278724, -3.203690116155496, -0.1925619244634082,
             6.985683557019738, -7.280199120562615,  2.34});
-    
+
     basic::DArry expect({
             0.7602860830452414, -0.1591090490225655,  0.9977072170854013,
             0.357143338844115,  0.7414751420913581, -0.0927725821643739,
             -0.5554400402569037,  0.8916535577665332,  0.4763459267936514,
             -0.3060933888138182});
-    
+
     basic::DArry guess(expect.size());
     for(auto &it: guess) it = drand(generator);
 
     basic::CArry result = basic::aberth(c, guess);
-    
+
     // sort `expect` and `result` so we can compare them term by term
     std::sort(std::begin(expect), std::end(expect));
     std::sort(std::begin(result), std::end(result), f2);
-    
+
     for(unsigned i=0; i<expect.size(); ++i)
     {
         ASSERT_NEAR(expect[i], result[i].real(), 1e-10);
@@ -368,23 +368,23 @@ TEST(PolynomialRoots, RealRootsAberth2)
             -0.01347466727223127,  0.200125699333026, -0.06577075073777044,
             -0.810921913206468,  0.6347898119672782,  1.538343111992133,
             -1.605177209592742, -1.062861119607442,  1.278 });
-    
+
     basic::DArry expect({
             -0.5036077278270599,  0.5253156753043096, -0.1863051985638844,
             0.4066469386958105, -0.327348593000119,  0.472961157808012,
             -0.5504948721890652,  0.1513160141154197,  0.2625784242407205,
             0.5203189352440989,  0.4459543391846599, -0.3634891145277974,
             -0.7818520862771727,  0.7310561595323164,  0.02860966626244443 });
-    
+
     basic::DArry guess(expect.size());
     for(auto &it: guess) it = drand(generator);
 
     basic::CArry result = basic::aberth(c, guess, 1e-10);
-    
+
     // sort `expect` and `result` so we can compare them term by term
     std::sort(std::begin(expect), std::end(expect));
     std::sort(std::begin(result), std::end(result), f2);
-    
+
     for(unsigned i=0; i<expect.size(); ++i)
     {
         ASSERT_NEAR(expect[i], result[i].real(), 1e-10);
@@ -394,7 +394,7 @@ TEST(PolynomialRoots, RealRootsAberth2)
 
 TEST(PolynomialRoots, ComplexRootsYC1)
 {
-    
+
     basic::CArry c({basic::Cmplx(-0.2333161111467611, -0.07203119056462484),
             basic::Cmplx(0.4691992245557093, 0.1069593270345827),
             basic::Cmplx(-0.4626667261153909, 0.01132740583617468),
@@ -404,7 +404,7 @@ TEST(PolynomialRoots, ComplexRootsYC1)
             basic::Cmplx(-2.340724865590584, -0.01971983376224859),
             basic::Cmplx(-0.5151163499273337, 1.464560317090324),
             basic::Cmplx(1.0, 0.0)});
-    
+
     basic::CArry expect({basic::Cmplx(0.7005658123938592, -0.8463540437130455),
             basic::Cmplx(0.9446989441874694, -0.257812273394918),
             basic::Cmplx(0.05705818190287304, 0.4239984931397236),
@@ -415,11 +415,11 @@ TEST(PolynomialRoots, ComplexRootsYC1)
             basic::Cmplx(0.7121026739314782, -0.2379777404982741)});
 
     basic::CArry result = basic::yan_and_chieng_2006(c);
-    
+
     // sort `expect` and `result` so we can compare them term by term
     std::sort(std::begin(expect), std::end(expect), f);
     std::sort(std::begin(result), std::end(result), f);
-    
+
     for(unsigned i=0; i<expect.size(); ++i)
     {
         ASSERT_NEAR(expect[i].real(), result[i].real(), 1e-10);
@@ -429,7 +429,7 @@ TEST(PolynomialRoots, ComplexRootsYC1)
 
 TEST(PolynomialRoots, ComplexRootsYC2)
 {
-    
+
     basic::DArry c({
             -0.1195107918695455,  0.8447947406345584, -0.6030868103450979,
             -0.9766533913297424, -0.2677767116634977,  0.3804660521221173,
@@ -437,7 +437,7 @@ TEST(PolynomialRoots, ComplexRootsYC2)
             -0.6073461984864883,  0.8943598261002668, -0.0478803277253317,
             -0.5541643941753234, -0.008585713188056 ,  0.9873624852167924,
             0.1332436172903213 });
-    
+
     basic::CArry expect({
             basic::Cmplx(-7.3453301351775968, 0.),
             basic::Cmplx(-1.0053226251035317, -0.6685050805086484),
@@ -452,15 +452,15 @@ TEST(PolynomialRoots, ComplexRootsYC2)
             basic::Cmplx(0.5190399155424927, -0.8510559355096275),
             basic::Cmplx(0.5190399155424927, 0.8510559355096275),
             basic::Cmplx(0.8183519974697149, -0.62842193876576),
-            basic::Cmplx(0.8183519974697149, 0.62842193876576),  
+            basic::Cmplx(0.8183519974697149, 0.62842193876576),
             basic::Cmplx(1.0922685323108878, 0.) });
 
     basic::CArry result = basic::yan_and_chieng_2006(c);
-    
+
     // sort `expect` and `result` so we can compare them term by term
     std::sort(std::begin(expect), std::end(expect), f);
     std::sort(std::begin(result), std::end(result), f);
-    
+
     for(unsigned i=0; i<expect.size(); ++i)
     {
         ASSERT_NEAR(expect[i].real(), result[i].real(), 1e-10);
@@ -475,7 +475,7 @@ TEST(PolynomialRoots, RealRootsYC)
             -0.008217029116396798, -0.1730879244322208,  0.2766216841964072,
             1.248746139278724, -3.203690116155496, -0.1925619244634082,
             6.985683557019738, -7.280199120562615,  2.34});
-    
+
     basic::DArry expect({
             0.7602860830452414, -0.1591090490225655,  0.9977072170854013,
             0.357143338844115,  0.7414751420913581, -0.0927725821643739,
@@ -483,11 +483,11 @@ TEST(PolynomialRoots, RealRootsYC)
             -0.3060933888138182});
 
     basic::CArry result = basic::yan_and_chieng_2006(c);
-    
+
     // sort `expect` and `result` so we can compare them term by term
     std::sort(std::begin(expect), std::end(expect));
     std::sort(std::begin(result), std::end(result), f2);
-    
+
     for(unsigned i=0; i<expect.size(); ++i)
     {
         ASSERT_NEAR(expect[i], result[i].real(), 1e-10);
@@ -504,20 +504,20 @@ TEST(PolynomialRoots, MultiRealRootsYC1)
             -2.8638873139566145554e-02,   1.6438835517368903805e+00,
             1.0000000000000000000e+00});
 
-    
+
     basic::DArry expect({
             -0.7592589202499554490, -0.7515504281961997712,
             -0.7121750519637163324, -0.6197568280813230412,
             -0.0649616158126642695, 0.2431327906295455976,
             0.2431327906295455976, 0.7775537113078748730});
 
-    
+
     basic::CArry result = basic::yan_and_chieng_2006(c);
-    
+
     // sort `expect` and `result` so we can compare them term by term
     std::sort(std::begin(expect), std::end(expect));
     std::sort(std::begin(result), std::end(result), f2);
-    
+
     for(unsigned i=0; i<expect.size(); ++i)
     {
         ASSERT_NEAR(expect[i], result[i].real(), 1e-8);
@@ -528,24 +528,26 @@ TEST(PolynomialRoots, MultiRealRootsYC1)
 TEST(PolynomialRoots, MultiRealRootsYC2)
 {
     basic::DArry c({
-            0.0, -2.94912e-02, 8.84736e-02, 9.611264e-01, -3.1193088e+00, 
-            -5.5872e+00, 2.51584e+01, -2.208e+00, -6.3264e+01, 5.2e+01, 3.6e+01, 
+            0.0, -2.94912e-02, 8.84736e-02, 9.611264e-01, -3.1193088e+00,
+            -5.5872e+00, 2.51584e+01, -2.208e+00, -6.3264e+01, 5.2e+01, 3.6e+01,
             -6.0e+01, 2.0e+01});
 
-    
+
     basic::DArry expect({
             1., 1., 1., 0.8, 0.6, 0.4, 0.2, 0., -0.2, -0.4, -0.6, -0.8 });
-    
-    
+
+
     basic::CArry result = basic::yan_and_chieng_2006(c);
-    
+
     // sort `expect` and `result` so we can compare them term by term
     std::sort(std::begin(expect), std::end(expect));
     std::sort(std::begin(result), std::end(result), f2);
-    
+
     for(unsigned i=0; i<expect.size(); ++i)
     {
         ASSERT_NEAR(expect[i], result[i].real(), 1e-8);
         ASSERT_NEAR(0.0, result[i].imag(), 1e-10);
     }
 }
+
+// TODO: add tests for roots of low-degree polynomials
