@@ -23,8 +23,7 @@ TEST(JacobiPoly, TestExceptions)
 
 TEST(JacobiPoly, JacobiPoly1)
 {
-    poly::Polynomial p = poly::Jacobi(
-            3.6397070770505078, 1.0266395951667127, 13, false);
+    poly::Polynomial p = poly::Jacobi(3.6397070770505078, 1.0266395951667127, 13);
 
     poly::Polynomial expect = poly::Polynomial({
         8.6647962638650988243e-01,  -2.8745036096183085306e+00,  -1.0888669504296072432e+02,
@@ -39,8 +38,7 @@ TEST(JacobiPoly, JacobiPoly1)
 
 TEST(JacobiPoly, JacobiPoly2)
 {
-    poly::Polynomial p = poly::Jacobi(
-            3.325420758348053, -0.42502377411185854, 12, false);
+    poly::Polynomial p = poly::Jacobi(3.325420758348053, -0.42502377411185854, 12);
 
     poly::Polynomial expect = poly::Polynomial({
         -5.7167036695211337349e-01, -4.3233893850837583628e+00, 4.6431398631484185557e+01,
@@ -55,27 +53,13 @@ TEST(JacobiPoly, JacobiPoly2)
 
 TEST(JacobiPoly, JacobiPoly3)
 {
-    poly::Polynomial p = poly::Jacobi(0.5782376534557787, -0.4336347338543658, 10, true);
-
-    poly::Polynomial expect = poly::Polynomial({
-        -9.2386947882105996399e-04, 9.4147560933420595952e-03, 5.6244058317055492524e-02,
-        -1.5253710832070888070e-01, -5.3145756409719924207e-01, 6.4759844286781775846e-01,
-        1.7189572524413017085e+00, -9.9618824488081314517e-01, -2.2310618885429596148e+00,
-        5.0230445908941567801e-01, 1.0000000000000000000e+00});
-
-    ASSERT_EQ(expect, p);
-    ASSERT_EQ(poly::PolyType::JACOBI, p.type());
-}
-
-TEST(JacobiPoly, JacobiPoly4)
-{
-    poly::Polynomial p1 = poly::Jacobi(0., 0., 7, false);
-    poly::Polynomial p2 = poly::Jacobi(0., 0., 7, false);
+    poly::Polynomial p1 = poly::Jacobi(0., 0., 7);
+    poly::Polynomial p2 = poly::Jacobi(0., 0., 7);
     poly::Polynomial p3 = (p1*p2).integ();
     ASSERT_NEAR(2.0/(2.0*7+1), p3(1.0)-p3(-1.0), 1e-10);
 }
 
-TEST(JacobiPoly, JacobiPoly5)
+TEST(JacobiPoly, JacobiPoly4)
 {
     poly::Polynomial p1 = poly::Jacobi(0., 0., 5);
     poly::Polynomial p2 = poly::Jacobi(0., 0., 18);

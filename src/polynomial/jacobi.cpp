@@ -22,8 +22,7 @@ namespace poly
 {
 
 // function to create Jacobi-family polynomials
-Polynomial Jacobi(const double alpha, const double beta,
-        const unsigned n, bool normalized)
+Polynomial Jacobi(const double alpha, const double beta, const unsigned n)
 {
 # ifndef NDEBUG
     if (alpha <= -1.0) throw JacobiParameters(__FL__, alpha, beta);
@@ -63,8 +62,6 @@ Polynomial Jacobi(const double alpha, const double beta,
         // swap
         std::swap(Pim1, Pi);
     }
-
-    if (normalized) Pi /= Pi.coef().back();
 
     Pi.set(PolyType::JACOBI);
 

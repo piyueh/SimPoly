@@ -530,12 +530,10 @@ protected:
  * \param alpha [in] Alpha parameter for Jacobi polynomial.
  * \param beta [in] Beta parameter for Jacobi polynomial.
  * \param n [in] Degree of Jacobi polynomial.
- * \param normalized [in] To make the leading coefficient 1.0 (default: true).
  *
  * \return Jacobi polynomial.
  */
-Polynomial Jacobi(const double alpha, const double beta,
-        const unsigned n, bool normalized=false);
+Polynomial Jacobi(const double alpha, const double beta, const unsigned n);
 
 
 Polynomial divide(const Polynomial &p1, const Polynomial &p2, Polynomial &R);

@@ -99,13 +99,14 @@ Polynomial & Polynomial::operator*=(const Polynomial &rhs)
     _d += rhs._d;
     _type = PolyType::GENERAL;
 
-    if (_have_roots && rhs._have_roots) // root-initialized
+    if (_have_roots && rhs._have_roots) // multiplication doesn't change roots
     {
         _rroots.insert(_rroots.end(), rhs._rroots.begin(), rhs._rroots.end());
         _croots.insert(_croots.end(), rhs._croots.begin(), rhs._croots.end());
         _nrr += rhs._nrr;
         _ncr += rhs._ncr;
 
+        // if either one doesn't use roots for evaluation, change the flag to false
         if (!(_use_roots && rhs._use_roots)) _use_roots = false;
     }
     else
