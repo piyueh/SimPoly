@@ -536,6 +536,20 @@ protected:
 Polynomial Jacobi(const double alpha, const double beta, const unsigned n);
 
 
+/**
+ * \brief A factory function creating Legendre polynomials,
+ *
+ * A Legendre polynomial is a Jacpbi polynomial with alpha=beta=0. But in
+ * this function we calculate Legendre coefficients directly, instead of using
+ * Jacobu(0, 0, n) to avoid unnecessary rounding errors.
+ *
+ * \param n [in] Degree of Jacobi polynomial.
+ *
+ * \return Legendre polynomial.
+ */
+Polynomial Legendre(const unsigned n);
+
+
 Polynomial divide(const Polynomial &p1, const Polynomial &p2, Polynomial &R);
 Polynomial quotient(const Polynomial &p1, const Polynomial &p2);
 Polynomial remainder(const Polynomial &p1, const Polynomial &p2);

@@ -14,6 +14,7 @@ SET(SOURCE
     ${SRC}/polynomial/polynomial.cpp
     ${SRC}/polynomial/operators.cpp
     ${SRC}/polynomial/jacobi.cpp
+    ${SRC}/polynomial/legendre.cpp
     )
 
 # SimPoly library

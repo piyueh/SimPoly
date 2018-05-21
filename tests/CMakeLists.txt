@@ -30,6 +30,7 @@ ADD_EXECUTABLE(polynomial
     ${TEST_SRC}/polynomial/calculus.cpp
     ${TEST_SRC}/polynomial/operators.cpp
     ${TEST_SRC}/polynomial/jacobi.cpp
+    ${TEST_SRC}/polynomial/legendre.cpp
     )
 
 TARGET_INCLUDE_DIRECTORIES(polynomial PRIVATE ${GTEST_INCLUDE_DIRS})
